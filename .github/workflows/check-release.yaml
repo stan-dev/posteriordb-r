@@ -23,6 +23,10 @@ jobs:
           repository: stan-dev/posteriordb
           path: posteriordb
 
+      - name: Set PDB path
+        run: export PDB_PATH=$GITHUB_WORKSPACE"/posteriordb";echo $PDB_PATH
+        shell: bash
+
       - uses: r-lib/actions/setup-r@v1
         with:
           use-public-rspm: true
