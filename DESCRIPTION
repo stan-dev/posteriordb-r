@@ -1,6 +1,6 @@
 Package: posteriordb
 Type: Package
-Title: The Posterior Database R functionality
+Title: R functionality for posteriordb
 Version: 0.2.3
 Date: 2021-09-02
 Authors@R: c(person("Mans", "Magnusson", email = "mans.magnusson@gmail.com",
