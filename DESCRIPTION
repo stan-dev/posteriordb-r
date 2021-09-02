@@ -1,0 +1,34 @@
+Package: posteriordb
+Type: Package
+Title: The Posterior Database R functionality
+Version: 0.2.3
+Date: 2021-09-02
+Authors@R: c(person("Mans", "Magnusson", email = "mans.magnusson@gmail.com",
+                    role = c("cre", "aut")),
+             person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com",
+                    role = c("aut")),
+             person("Aki", "Vehtari", email = "aki.vehtari@aalto.fi",
+                    role = c("aut")))
+Maintainer: Mans Magnusson <mans.magnusson@gmail.com>
+Description: R functionality of easy handling of the posteriordb posteriors.
+License: BSD_3_clause + file LICENSE
+RoxygenNote: 7.1.1
+Encoding: UTF-8
+Depends:
+  R (>= 3.5.0)
+Imports:
+  checkmate,
+  jsonlite
+Suggests:
+    dplyr,
+    posterior,
+    httr,
+    gh,
+    git2r,
+    remotes,
+    rstan,
+    testthat,
+    bibtex,
+    digest,
+    yaml,
+    covr
