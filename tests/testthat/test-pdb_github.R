@@ -46,6 +46,6 @@ test_that("pdb_default is github", {
   skip_if(is.null(github_pat()))
 
   expect_silent(pdb_default_test <- pdb_default())
-  expect_silent(pdb_github_test <- pdb_github("stan-dev/posteriordb@master"))
+  expect_silent(pdb_github_test <- pdb_github("stan-dev/posteriordb/posterior_database"))
   expect_equal(pdb_default_test, pdb_github_test)
 })
