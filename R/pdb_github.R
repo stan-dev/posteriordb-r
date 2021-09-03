@@ -1,6 +1,6 @@
 #' @rdname pdb_local
 #' @export
-pdb_github <- function(repo = getOption("pdb_repo", "stan-dev/posteriordb/posterior_database"),
+pdb_github <- function(repo = getOption("pdb_repo", "stan-dev/posteriordb"),
                        cache_path = tempdir(),
                        ref = github_ref(),
                        subdir = NULL,
@@ -29,7 +29,25 @@ setup_pdb.pdb_github <- function(pdb, ...){
   pdb$github$pat <- arg$pat
 
   pdb <- pdb_endpoint(pdb)
+  pdb$pdb_id <- paste_github_repo_spec(pdb$github)
   pdb
+}
+
+paste_github_repo_spec <- function(x){
+  spec <- paste0(x$username, "/", x$repo)
+  if(nzchar(x$subdir)) {
+    spec <- paste0(spec, "/", x$subdir)
+  }
+  if(nzchar(x$pull)) {
+    spec <- paste0(spec, "#", x$pull)
+  }
+  if(nzchar(x$ref)) {
+    spec <- paste0(spec, "@", x$ref)
+  }
+  if(nzchar(x$release)) {
+    spec <- paste0(spec, "@*", x$release)
+  }
+  spec
 }
 
 #' @rdname pdb_version
@@ -90,7 +108,10 @@ reference_posterior_names.pdb_github <- function(pdb, ...) {
 #' @keywords internal
 pdb_endpoint.pdb_github <- function(pdb, ...) {
   if(!is_pdb_endpoint(pdb)){
-    stop2("No posterior database in '", pdb$pdb_id, "'.")
+    pdb$github$subdir <- "posterior_database"
+    if(!is_pdb_endpoint(pdb)){
+      stop2("No posterior database in '", pdb$pdb_id, "'.")
+    }
   }
   pdb
 }
