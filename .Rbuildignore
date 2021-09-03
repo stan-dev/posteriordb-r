@@ -6,3 +6,4 @@ README.md
 ^appveyor\.yml$
 ^\.github$
 posteriordb*
+^codecov\.yml$

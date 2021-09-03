@@ -1,4 +1,10 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/stan-dev/posteriordb-r/actions/workflows/check-release.yaml/badge.svg)](https://github.com/stan-dev/posteriordb-r/actions/workflows/check-release.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/stan-dev/posteriordb-r/branch/main/graph/badge.svg)](https://codecov.io/gh/stan-dev/posteriordb-r?branch=main)
+<!-- badges: end -->
 
 `posteriordb-r`: an R package to work with `posteriordb`
 ========================================================
@@ -156,14 +162,14 @@ dfp <- data_file_path(po)
 dfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//Rtmp3nlrez/posteriordb_cache/data/data/eight_schools.json"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpummtnT/posteriordb_cache/data/data/eight_schools.json"
 
 ``` r
 scfp <- stan_code_file_path(po)
 scfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//Rtmp3nlrez/posteriordb_cache/models/stan/eight_schools_centered.stan"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpummtnT/posteriordb_cache/models/stan/eight_schools_centered.stan"
 
 We can also access information regarding the model and the data used to
 compute the posterior.
