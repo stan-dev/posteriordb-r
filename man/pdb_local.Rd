@@ -31,7 +31,7 @@ pdb_config(directory = getwd())
 pdb_github(
   repo = getOption("pdb_repo", "stan-dev/posteriordb"),
   cache_path = tempdir(),
-  ref = github_ref(),
+  ref = "master",
   subdir = NULL,
   auth_token = github_pat(),
   host = "https://api.github.com"

@@ -3,8 +3,8 @@ context("test-pdb_github")
 test_that("posteriordb:::check_pdb indicates that github PDB is ok", {
   skip_if(is.null(github_pat()))
 
-  expect_silent(pdb_github_test1 <- pdb_github("stan-dev/posteriordb/posterior_database", ref = "master"))
-  expect_silent(pdb_github_test2 <- pdb_github("stan-dev/posteriordb", ref = "master"))
+  expect_silent(pdb_github_test1 <- pdb_github("stan-dev/posteriordb/posterior_database"))
+  expect_silent(pdb_github_test2 <- pdb_github("stan-dev/posteriordb"))
   expect_silent(pdb_github_test3 <- pdb_github("stan-dev/posteriordb/posterior_database@master"))
   expect_output(print(pdb_github_test1), "Posterior Database")
   expect_output(print(pdb_github_test1), "github")

@@ -2,7 +2,7 @@
 #' @export
 pdb_github <- function(repo = getOption("pdb_repo", "stan-dev/posteriordb"),
                        cache_path = tempdir(),
-                       ref = github_ref(),
+                       ref = "master",
                        subdir = NULL,
                        auth_token = github_pat(),
                        host = "https://api.github.com"){
@@ -165,24 +165,6 @@ github_pat <- function(pdb = NULL) {
   if(is.null(pdb)) return(NULL)
   pdb$github$pat
 }
-
-#' Retrieve Github reference.
-#'
-#' A github reference to use
-#' Looks in env var `GITHUB_REF`
-#' @param pdb A posterior datasbase object.
-#' @export
-github_ref <- function(pdb = NULL) {
-  ref <- Sys.getenv("GITHUB_REF")
-  if (nzchar(ref)) {
-    # This is to handle that GITHUB_REF on Github Actions return 'refs/heads/[ref]'
-    ref <- sub("^refs/heads/", "", ref)
-    return(ref)
-  } else {
-    return("master")
-  }
-}
-
 
 
 #' Download file from GitHub
