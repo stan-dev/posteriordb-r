@@ -24,7 +24,7 @@ jobs:
           path: posteriordb
 
       - name: Set PDB path
-        run: export PDB_PATH=$GITHUB_WORKSPACE"/posteriordb";echo $PDB_PATH;ls $PDB_PATH
+        run: export PDB_PATH=$GITHUB_WORKSPACE"/posteriordb";echo $PDB_PATH;echo PDB_PATH="$PDB_PATH" >> ~/.Renviron;ls $PDB_PATH
         shell: bash
 
       - uses: r-lib/actions/setup-r@v1
