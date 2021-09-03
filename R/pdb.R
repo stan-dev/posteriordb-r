@@ -15,7 +15,7 @@
 #' This is used to store files locally and without affecting the database.
 #' @param x an object to access a pdb for, if character this is how to identify the pdb (path for local pdb, repo for github pdb)
 #' @param pdb_type Type of posterior database connection. Either \code{local} or \code{github}.
-#' @param path a local path to a posterior database.
+#' @param path a local path to a posterior database. Defaults to `pdb_path` option or PDB_PATH environment variable.
 #' @param repo Repository address in the format
 #'   `username/repo[/subdir][@@ref|#pull]`. Alternatively, you can
 #'   specify `subdir` and/or `ref` using the respective parameters
@@ -36,8 +36,10 @@
 #' @return a \code{pdb} object
 #'
 #' @export
-pdb_local <- function(path = getOption("pdb_path", getwd()),
+pdb_local <- function(path = getOption("pdb_path", Sys.getenv("PDB_PATH")),
                       cache_path = tempdir()){
+  if(path == "") path <- NULL
+  checkmate::assert_directory_exists(path)
   pdb(x = path, pdb_type = "local", cache_path = cache_path)
 }
 

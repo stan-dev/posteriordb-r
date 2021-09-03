@@ -11,7 +11,10 @@
 \alias{pdb_github}
 \title{Create a Posterior Database (pdb) connection}
 \usage{
-pdb_local(path = getOption("pdb_path", getwd()), cache_path = tempdir())
+pdb_local(
+  path = getOption("pdb_path", Sys.getenv("PDB_PATH")),
+  cache_path = tempdir()
+)
 
 pdb(x, ...)
 
@@ -35,7 +38,7 @@ pdb_github(
 )
 }
 \arguments{
-\item{path}{a local path to a posterior database.}
+\item{path}{a local path to a posterior database. Defaults to `pdb_path` option or PDB_PATH environment variable.}
 
 \item{cache_path}{The path to the pdb cache. Default is R temporary directory.
 This is used to store files locally and without affecting the database.}
