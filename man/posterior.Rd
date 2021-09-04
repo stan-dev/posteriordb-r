@@ -16,7 +16,8 @@ posterior(x, pdb = pdb_default(), ...)
 pdb_posterior(x, pdb = pdb_default(), ...)
 }
 \arguments{
-\item{x}{a posterior name that exist in the posterior database}
+\item{x}{a posterior name that exist in the posterior database or a
+list used to construct a posterior object.}
 
 \item{pdb}{a \code{pdb} posterior database object.}
 

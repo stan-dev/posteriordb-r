@@ -1,6 +1,7 @@
 #' Access a posterior in the posterior database
 #'
-#' @param x a posterior name that exist in the posterior database
+#' @param x a posterior name that exist in the posterior database or a
+#'          list used to construct a posterior object.
 #' @param pdb a \code{pdb} posterior database object.
 #' @param ... currently not in use.
 #' @export
