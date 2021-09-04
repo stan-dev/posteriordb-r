@@ -20,15 +20,16 @@ Imports:
   checkmate,
   jsonlite
 Suggests:
+    bibtex,
+    covr,
+    digest,
     dplyr,
-    posterior,
     httr,
     gh,
     git2r,
+    posterior,
     remotes,
+    rmarkdown
     rstan,
     testthat,
-    bibtex,
-    digest,
-    yaml,
-    covr
+    yaml
