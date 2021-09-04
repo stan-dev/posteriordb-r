@@ -4,6 +4,12 @@
 #'          list used to construct a posterior object.
 #' @param pdb a \code{pdb} posterior database object.
 #' @param ... currently not in use.
+#'
+#' @details
+#' To setup a posterior object from a list, a minimum och a `pdb_model`,
+#' `pdb_data`, and a `dimension` element need to be included. See
+#' `posterior("eight_schools")$dimensions` for an example.
+#'
 #' @export
 posterior <- function(x, pdb = pdb_default(), ...) {
   UseMethod("posterior")
@@ -39,6 +45,19 @@ posterior.list <- function(x, pdb = pdb_default(), ...) {
     x$data_info <- di
     x$pdb_model_code <- NULL
     x$pdb_data <- NULL
+  }
+  if(is.null(x$reference_posterior_name)){
+    x["reference_posterior_name"] <- list(NULL)
+  }
+  if(is.null(x$dimensions)){
+    stop("posterior dimensions are missing.")
+  }
+  if(is.null(x$added_by)){
+    x$added_by <- unname(Sys.info()["user"])
+    message("'added_by' set to '", x$added_by, "'")
+  }
+  if(is.null(x$added_date)){
+    x$added_date <- Sys.Date()
   }
   pdb(x) <- pdb
   assert_pdb_posterior(x)

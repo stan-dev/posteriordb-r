@@ -26,3 +26,8 @@ list used to construct a posterior object.}
 \description{
 Access a posterior in the posterior database
 }
+\details{
+To setup a posterior object from a list, a minimum och a `pdb_model`,
+`pdb_data`, and a `dimension` element need to be included. See
+`posterior("eight_schools")$dimensions` for an example.
+}

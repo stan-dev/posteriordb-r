@@ -130,3 +130,18 @@ test_that("Check that model_code, data and reference_posteriors contain a pdb at
   expect_identical(pdb(rp), pdb_test)
 
 })
+
+
+test_that("a posterior object can be created from a list", {
+
+  expect_silent(pdb_test <- pdb_local())
+
+  expect_silent(po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test))
+
+  x <- list(pdb_data = get_data(po),
+            pdb_model_code = model_code(po, framework = "stan"),
+            dimensions = po$dimensions)
+
+  expect_message(po2 <- posterior(x, pdb_test))
+
+})
