@@ -10,6 +10,8 @@
 #' @export
 check_pdb_posterior <- function(po, run_stan_code_checks = TRUE, verbose = TRUE) {
   checkmate::assert_class(po, "pdb_posterior")
+  checkmate::assert_flag(run_stan_code_checks)
+  checkmate::assert_flag(verbose)
 
   if(verbose) message("Checking posterior '", po$name,"' ...")
 
