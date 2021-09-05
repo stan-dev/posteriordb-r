@@ -26,14 +26,18 @@ compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
   po <- posterior(rpi$name, pdb = pdb)
   pdn <- posterior_dimension_names(x = po$dimensions)
 
-  stan_object <- run_stan(po,
+  # Add versions
+  rpi$versions <- pdb_stan_sampling_versions()
+
+  # Run Stan
+  stan_object <- run_stan.pdb_posterior(po,
                           stan_args = rpi$inference$method_arguments)
 
   # Compute the diagnostics from the stan object and add it to the slot
   rpi$diagnostics <- compute_stan_sampling_diagnostics(x = stan_object, keep_dimensions = pdn)
 
   # Create rpd object
-  rpd <- reference_posterior_draws(x = stan_object, info = rpi)
+  rpd <- reference_posterior_draws(x = stan_object, info = rpi, pdb = pdb)
 
   # Subset to relevant parameters (that are used)
   rpd <- subset(rpd, variable = pdn)
@@ -49,7 +53,7 @@ compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
 reference_posterior_draws.stanfit <- function(x, info, pdb = pdb_default(), ...){
   checkmate::assert_class(info, "pdb_reference_posterior_info")
   draws <- posterior::as_draws_list(posterior::as_draws(x))
-  reference_posterior_draws(draws)
+  reference_posterior_draws(draws, info = info, pdb = pdb)
 }
 
 
@@ -120,4 +124,12 @@ posterior_dimension_names <- function(x){
     }
   }
   return(unlist(dn))
+}
+
+#' Extract relevant stan versions
+pdb_stan_sampling_versions <- function(){
+  list(rstan_version = paste("rstan", utils::packageVersion("rstan")),
+       r_Makevars = paste(readLines("~/.R/Makevars"), collapse = "\n"), # This works for macosx
+       r_version = R.version$version.string,
+       r_session = paste(capture.output(print(sessionInfo())), collapse = "\n"))
 }

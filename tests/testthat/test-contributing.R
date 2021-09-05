@@ -26,6 +26,7 @@ test_that("test that all steps of the contribution pipeline works as expected", 
   # Create the data object
   expect_silent(dat <- pdb_data(eight_schools, info = di))
 
+  # remove_pdb(dat, pdbl)
   expect_silent(write_pdb(dat, pdbl))
 
   ### Add model ----
@@ -47,6 +48,7 @@ test_that("test that all steps of the contribution pipeline works as expected", 
   expect_silent(mc <- model_code(sm, info = mi))
 
   # Write the model to the database
+  # remove_pdb(mc, pdbl)
   expect_silent(write_pdb(mc, pdbl))
 
   ### Add posterior ----
@@ -55,20 +57,48 @@ test_that("test that all steps of the contribution pipeline works as expected", 
             keywords = "posterior_keywords",
             urls = "posterior_urls",
             references = "posterior_references",
-            dimensions = list("dimensions" = 2, "dim" = 3),
+            dimensions = list("theta" = 8, "mu" = 1, "tau" = 1),
             reference_posterior_name = NULL,
             added_date = Sys.Date(),
             added_by = "Stanislaw Ulam")
   expect_silent(po <- pdb_posterior(x, pdbl))
+  # remove_pdb(po, pdbl)
   expect_silent(write_pdb(po, pdbl))
 
 
+  ### Setup reference posterior info ----
+  posteriordb:::pdb_cache_clear()
 
+  expect_silent(po <- posterior("test_eight_schools_data-test_eight_schools_model", pdbl))
+
+  x <- list(name = posterior_name(po),
+            inference = list(method = "stan_sampling",
+                             method_arguments = list(chains = 10,
+                                                     iter = 20000,
+                                                     warmup = 10000,
+                                                     thin = 10,
+                                                     seed = 4711,
+                                                     control = list(adapt_delta = 0.92))),
+            diagnostics = NULL, # This will be added in computing the reference posterior
+            checks_made = NULL, # This will be added in computing the reference posterior
+            comments = "This is a test reference posterior",
+            added_by = "Stanislaw Ulam",
+            added_date = Sys.Date(),
+            versions = NULL # This will be added in computing the reference posterior
+            )
+
+  # Create a reference posterior draws info object
+  expect_silent(rpi <- pdb_reference_posterior_draws_info(x))
+
+  expect_output(rp <- compute_reference_posterior_draws(rpi, pdbl))
+  expect_silent(rp <- check_reference_posterior_draws(x = rp))
+
+  expect_silent(write_pdb(rp, pdbl, overwrite = TRUE))
 
   # Cleanup
   remove_pdb(dat, pdbl)
   remove_pdb(mc, pdbl)
   remove_pdb(po, pdbl)
-
+  remove_pdb(rp, pdbl)
 
 })
