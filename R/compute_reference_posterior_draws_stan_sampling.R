@@ -128,8 +128,10 @@ posterior_dimension_names <- function(x){
 
 #' Extract relevant stan versions
 pdb_stan_sampling_versions <- function(){
+  M <- file.path(Sys.getenv("HOME"), ".R", ifelse(.Platform$OS.type == "windows", "Makevars.win", "Makevars"))
+  Mfile <- if(file.exists(M)) paste(readLines(M), collapse = "\n") else "[Could not find Makevar file]"
   list(rstan_version = paste("rstan", utils::packageVersion("rstan")),
-       r_Makevars = paste(readLines("~/.R/Makevars"), collapse = "\n"), # This works for macosx
+       r_Makevars = paste(Mfile, collapse = "\n"),
        r_version = R.version$version.string,
        r_session = paste(capture.output(print(sessionInfo())), collapse = "\n"))
 }
