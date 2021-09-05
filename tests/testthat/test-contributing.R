@@ -27,8 +27,6 @@ test_that("test that all steps of the contribution pipeline works as expected", 
   expect_silent(dat <- pdb_data(eight_schools, info = di))
 
   expect_silent(write_pdb(dat, pdbl))
-  # We can then remove the data from the database in a similar way.
-  # remove_pdb(dat, pdbl)
 
   ### Add model ----
   x <- list(name = "test_eight_schools_model",
@@ -51,12 +49,26 @@ test_that("test that all steps of the contribution pipeline works as expected", 
   # Write the model to the database
   expect_silent(write_pdb(mc, pdbl))
 
+  ### Add posterior ----
+  x <- list(pdb_model_code = mc,
+            pdb_data = dat,
+            keywords = "posterior_keywords",
+            urls = "posterior_urls",
+            references = "posterior_references",
+            dimensions = list("dimensions" = 2, "dim" = 3),
+            reference_posterior_name = NULL,
+            added_date = Sys.Date(),
+            added_by = "Stanislaw Ulam")
+  expect_silent(po <- pdb_posterior(x, pdbl))
+  expect_silent(write_pdb(po, pdbl))
 
 
 
-  # We can then remove the data from the database with:
-  # remove_pdb(mc, pdbl)
 
+  # Cleanup
+  remove_pdb(dat, pdbl)
+  remove_pdb(mc, pdbl)
+  remove_pdb(po, pdbl)
 
 
 })
