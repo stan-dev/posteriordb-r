@@ -77,7 +77,7 @@ test_that("test that all steps of the contribution pipeline works as expected", 
                                                      iter = 20000,
                                                      warmup = 10000,
                                                      thin = 10,
-                                                     seed = 4711,
+                                                     seed = 4712,
                                                      control = list(adapt_delta = 0.92))),
             diagnostics = NULL, # This will be added in computing the reference posterior
             checks_made = NULL, # This will be added in computing the reference posterior
