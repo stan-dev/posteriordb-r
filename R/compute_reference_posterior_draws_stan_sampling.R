@@ -133,5 +133,5 @@ pdb_stan_sampling_versions <- function(){
   list(rstan_version = paste("rstan", utils::packageVersion("rstan")),
        r_Makevars = paste(Mfile, collapse = "\n"),
        r_version = R.version$version.string,
-       r_session = paste(capture.output(print(sessionInfo())), collapse = "\n"))
+       r_session = paste(utils::capture.output(print(utils::sessionInfo())), collapse = "\n"))
 }
