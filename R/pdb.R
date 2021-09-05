@@ -627,8 +627,10 @@ write_to_path <- function(x, path, type, pdb, name = NULL, zip = FALSE, info = T
   }
 
   path <- strsplit(path, "/")[[1]]
-  fp <- file.path(pdb_endpoint(pdb), do.call(file.path, as.list(path)), nm)
+  dp <- file.path(pdb_endpoint(pdb), do.call(file.path, as.list(path)))
+  fp <- file.path(dp, nm)
   zfp <- paste0(fp, ".zip")
+  if(!checkmate::test_directory_exists(dp)) dir.create(dp, recursive = TRUE)
   if(zip){
     checkmate::assert_path_for_output(zfp, overwrite = overwrite)
   } else {

@@ -49,6 +49,7 @@ test_that("compute and write summary_statistics", {
   # Test write gsd
   info(rpm)$name <- "test_data-test_model"
   expect_silent(write_pdb(rpm, pdb_test))
+  # remove_pdb(rpm, pdb_test)
   expect_error(write_pdb(rpm, pdb_test))
   expect_silent(write_pdb(rpm, pdb_test, overwrite = TRUE))
 
