@@ -28,18 +28,22 @@ test_that("compute and write summary_statistics", {
   if(on_github_actions()) skip_on_os("windows")
 
   expect_silent(pdb_test <- pdb_local())
+  posteriordb:::pdb_cache_clear(pdb_test)
   expect_silent(po <- posterior("eight_schools-eight_schools_noncentered", pdb_test))
   expect_silent(rpd <- reference_posterior_draws(po))
 
   expect_silent(rpdc <- check_summary_statistics_draws(x = rpd))
   expect_silent(rpm <- compute_reference_posterior_summary_statistic(rpdc, "mean"))
   expect_silent(rpmi <- info(rpm))
+  expect_silent(rps <- compute_reference_posterior_summary_statistic(rpdc, "sd"))
+  expect_silent(rpsi <- info(rps))
 
   # Setup posterior
   # This is needed to access the created reference posterior
   # since it uses posterior() to access the test reference posterior
   po$name <- "test_data-test_model"
   po$reference_posterior_name <- po$name
+  # remove_pdb(po, pdb_test)
   write_pdb(po, pdb_test)
 
   # Test write gsd
@@ -48,6 +52,11 @@ test_that("compute and write summary_statistics", {
   expect_error(write_pdb(rpm, pdb_test))
   expect_silent(write_pdb(rpm, pdb_test, overwrite = TRUE))
 
+  info(rps)$name <- "test_data-test_model"
+  # remove_pdb(rps, pdb_test)
+  expect_silent(write_pdb(rps, pdb_test))
+
+
   expect_silent(rpt <- pdb_reference_posterior_summary_statistics(x = "test_data-test_model", pdb = pdb_test))
   expect_equal(rpt$mean, rpm, tolerance = 0.000000000000001)
   expect_identical(info(rpm), info(rpt$mean))
@@ -55,6 +64,7 @@ test_that("compute and write summary_statistics", {
 
   # Remove rpd
   expect_silent(remove_pdb(rpt$mean, pdb = pdb_test))
+  expect_silent(remove_pdb(rpt$sd, pdb = pdb_test))
   pdb_clear_cache(pdb_test)
   expect_error(pdb_reference_posterior_draws("test_data-test_model", pdb_test))
 
