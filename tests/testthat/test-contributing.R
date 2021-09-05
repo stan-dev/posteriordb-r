@@ -4,7 +4,7 @@ context("test-contributing")
 
 test_that("test that all steps of the contribution pipeline works as expected", {
 
-  expect_silent(pdb_test <- pdb_local())
+  expect_silent(pdbl <- pdb_local())
 
   ### Add data ----
   x <- list(name = "test_eight_schools_data",
@@ -25,6 +25,38 @@ test_that("test that all steps of the contribution pipeline works as expected", 
 
   # Create the data object
   expect_silent(dat <- pdb_data(eight_schools, info = di))
+
+  expect_silent(write_pdb(dat, pdbl))
+  # We can then remove the data from the database in a similar way.
+  # remove_pdb(dat, pdbl)
+
+  ### Add model ----
+  x <- list(name = "test_eight_schools_model",
+            keywords = c("test_model", "hiearchical"),
+            title = "Test Non-Centered Model for Eight Schools",
+            description = "An hiearchical model, non-centered parametrisation.",
+            urls = c("https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html"),
+            framework = "stan",
+            references = NULL,
+            added_by = "Stanislaw Ulam",
+            added_date = Sys.Date())
+  expect_silent(mi <- pdb_model_info(x))
+
+  # Read in Stan model and compile the model
+  file_path <- system.file("test_files/eight_schools_noncentered.stan", package = "posteriordb")
+  smc <- readLines(file_path)
+  sm <- rstan::stan_model(model_code = smc)
+  expect_silent(mc <- model_code(sm, info = mi))
+
+  # Write the model to the database
+  expect_silent(write_pdb(mc, pdbl))
+
+
+
+
+  # We can then remove the data from the database with:
+  # remove_pdb(mc, pdbl)
+
 
 
 })
