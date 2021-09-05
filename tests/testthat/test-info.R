@@ -50,3 +50,19 @@ test_that("data info constructor ", {
   x$data_file <- "data/data/wells_data2.json"
   expect_silent(di <- pdb_data_info(x))
 })
+
+
+test_that("model info constructor ", {
+  x <- list(name = "test_eight_schools_model",
+            keywords = c("test_model", "hiearchical"),
+            title = "Test Non-Centered Model for Eight Schools",
+            description = "An hiearchical model, non-centered parametrisation.",
+            urls = c("https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html"),
+            framework = "stan",
+            references = NULL,
+            added_by = "Stanislaw Ulam",
+            added_date = Sys.Date())
+
+  expect_silent(mi <- pdb_model_info(x))
+  checkmate::expect_class(mi, "pdb_model_info")
+})
