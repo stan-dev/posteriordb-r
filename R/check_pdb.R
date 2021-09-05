@@ -136,7 +136,7 @@ check_pdb_run_stan <- function(pdb, posterior_idx = NULL) {
 #' @rdname check_pdb
 check_pdb_posterior_run_stan <- function(po) {
   checkmate::assert_class(po, "pdb_posterior")
-  suppressWarnings(so <- utils::capture.output(run_stan(po, stan_args = list(iter = 2, warmup = 1, chains = 1))))
+  suppressWarnings(so <- utils::capture.output(run_stan(po, stan_args = list(iter = 2, warmup = 0, chains = 1))))
   so
 }
 

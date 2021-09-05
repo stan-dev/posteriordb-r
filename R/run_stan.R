@@ -21,7 +21,7 @@ run_stan.pdb_posterior <- function(x, stan_args, ...){
   sa <- c(sa, stan_args)
   stan_object <- do.call(rstan::stan, sa)
 
-  # Stan model codes are stored locally (seem to be a bug)
+  # Stan model codes are stored locally
   stan_object@model_name <- x$name
   stan_object
 }
