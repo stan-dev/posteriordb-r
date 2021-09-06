@@ -8,6 +8,7 @@
 \alias{check_pdb_read_reference_posterior_draws}
 \alias{check_pdb_posterior_run_stan}
 \alias{check_pdb_references}
+\alias{check_pdb_posterior_references}
 \alias{check_pdb_all_models_have_posterior}
 \alias{check_pdb_all_data_have_posterior}
 \alias{check_pdb_all_reference_posteriors_have_posterior}
@@ -30,7 +31,9 @@ check_pdb_read_reference_posterior_draws(posterior_list)
 
 check_pdb_posterior_run_stan(po)
 
-check_pdb_references(pdb, posterior_idx = NULL)
+check_pdb_references(pdb)
+
+check_pdb_posterior_references(posterior_list)
 
 check_pdb_all_models_have_posterior(pdb)
 

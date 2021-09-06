@@ -25,6 +25,7 @@
 #' @export
 check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = TRUE, verbose = TRUE) {
   checkmate::assert_class(pdb, "pdb")
+  checkmate::assert_choice(pdb_type(pdb), "local")
   checkmate::assert_subset(posterior_names_to_check, choices = posterior_names(pdb))
   checkmate::assert_flag(verbose)
 
@@ -52,6 +53,8 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
   if(verbose) message("- All data are part of a posterior.")
   check_pdb_all_reference_posteriors_have_posterior(pdb)
   if(verbose) message("- All reference posteriors are part of a posterior.")
+  check_pdb_references(pdb)
+  if(verbose) message("- All bibliography elements exist in a data, model or posterior object.")
 
   if(verbose) message("\nPosterior database is ok.\n")
   invisible(TRUE)
@@ -113,14 +116,12 @@ check_posterior_stan_syntax <- function(po) {
 }
 
 
+
 #' @rdname check_pdb
-check_pdb_references <- function(pdb, posterior_idx = NULL) {
+check_pdb_references <- function(pdb) {
   checkmate::assert_class(pdb, "pdb")
 
-  message("Checking references...")
   pns <- posterior_names(pdb)
-  if(!is.null(posterior_idx)) pns <- pns[posterior_idx]
-  refs <- list()
   for (i in seq_along(pns)) {
     po <- posterior(pns[i], pdb = pdb)
     refs[[length(refs) + 1]] <- po$references
@@ -133,18 +134,39 @@ check_pdb_references <- function(pdb, posterior_idx = NULL) {
   bib <- bibliography(pdb)
   bibnms <- names(bib)
 
-  ref_in_bib <- refs %in% bibnms
-  if(any(!ref_in_bib)){
-    stop("Reference '", refs[!ref_in_bib], "' exist in database but not in the bibliography.", call. = FALSE)
-  }
-
   bib_in_ref <- bibnms %in% refs
   if(any(!bib_in_ref)){
-    stop("Reference '", bibnms[!bib_in_ref], "' in bibliography but not in any posterior, data or model.", call. = FALSE)
+    stop("Reference '", bibnms[!bib_in_ref], "'exist in bibliography but not in any posterior, data or model.", call. = FALSE)
   }
-
-  message("All references are correct...")
 }
+
+#' @rdname check_pdb
+check_pdb_posterior_references <- function(posterior_list){
+  pos <- lapply(posterior_list, checkmate::assert_class, classes = "pdb_posterior")
+  for (i in seq_along(pos)) {
+    bib <- pdb_bibliography(pdb = pdb(pos[[i]]))
+    bibnames <- names(bib)
+
+    porefs <- pos[[i]]$references
+    ref_in_bib <- porefs %in% bibnames
+    if(any(!ref_in_bib)){
+      stop("Posterior reference '", porefs[!ref_in_bib], "' does not exist in the bibliography.", call. = FALSE)
+    }
+
+    mrefs <- pdb_model_info(pos[[i]])$references
+    ref_in_bib <- mrefs %in% bibnames
+    if(any(!ref_in_bib)){
+      stop("Model reference '", mrefs[!ref_in_bib], "' does not exist in the bibliography.", call. = FALSE)
+    }
+
+    drefs <- pdb_data_info(pos[[i]])$references
+    ref_in_bib <- drefs %in% bibnames
+    if(any(!ref_in_bib)){
+      stop("Data reference '", drefs[!ref_in_bib], "' does not exist in the bibliography.", call. = FALSE)
+    }
+  }
+}
+
 
 #' @rdname check_pdb
 check_pdb_all_models_have_posterior <- function(pdb){
