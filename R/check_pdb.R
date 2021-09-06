@@ -121,6 +121,7 @@ check_posterior_stan_syntax <- function(po) {
 check_pdb_references <- function(pdb) {
   checkmate::assert_class(pdb, "pdb")
 
+  refs <- list()
   pns <- posterior_names(pdb)
   for (i in seq_along(pns)) {
     po <- posterior(pns[i], pdb = pdb)
