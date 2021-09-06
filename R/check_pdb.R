@@ -2,7 +2,6 @@
 #'
 #' @param pdb a \code{pdb} object
 #' @param posterior_names_to_check an vector indicating what posteriors to check in the pdb. Default is NULL (all).
-#' @param posterior_idx an vector with posterior indecies. Default is NULL (all).
 #' @param posterior_list a list of \code{pdb_posterior} objects.
 #' @param run_stan_code_checks should checks using Stan be run?
 #' @param verbose should check results be printed?
