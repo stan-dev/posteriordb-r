@@ -22,7 +22,7 @@
 #'
 check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = TRUE, verbose = TRUE) {
   checkmate::assert_class(pdb, "pdb")
-  checkmate::assert_choice(posteriors_to_check, choices = posterior_names(pdb), null.ok = TRUE)
+  checkmate::assert_choice(posterior_names_to_check, choices = posterior_names(pdb), null.ok = TRUE)
   checkmate::assert_flag(verbose)
 
   if(verbose) message("Checking posterior database...")
