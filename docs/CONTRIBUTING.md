@@ -138,9 +138,6 @@ posterior. We do this as follows:
     ## 
     ## Posterior is ok.
 
-We have not added `testBiBTeX2020` to the bibliography, and hence the
-function throws an error.
-
 If the posterior passes all checks, it can be added to the posteriordb,
 so it is just to open a Pull Request with the proposed posterior.
 

@@ -140,7 +140,6 @@ Finally, we want to check that everything is in order with the posterior. We do 
 ```{r}
 check_pdb_posterior(po)
 ```
-We have not added `testBiBTeX2020` to the bibliography, and hence the function throws an error.
 
 If the posterior passes all checks, it can be added to the posteriordb, so it is just to open a Pull Request with the proposed posterior.
 
