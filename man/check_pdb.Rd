@@ -56,6 +56,8 @@ check_pdb_all_reference_posteriors_have_posterior(pdb)
 
 \item{verbose}{should check results be printed?}
 
+\item{posterior_idx}{an vector with posterior indecies. Default is NULL (all).}
+
 \item{posterior_list}{a list of \code{pdb_posterior} objects.}
 
 \item{po}{a \code{pdb_posterior} object.}
