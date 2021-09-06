@@ -18,6 +18,7 @@ Depends:
   R (>= 3.5.0)
 Imports:
   checkmate,
+  gh,  
   jsonlite
 Suggests:
     bibtex,
@@ -25,7 +26,6 @@ Suggests:
     digest,
     dplyr,
     httr,
-    gh,
     git2r,
     posterior,
     remotes,
