@@ -29,6 +29,7 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
   checkmate::assert_flag(verbose)
 
   if(verbose) message("Checking posterior database...")
+  return_status <- 0L
 
   if(!is.null(posterior_names_to_check)) {
     pns <- posterior_names_to_check
@@ -39,24 +40,33 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
   if(verbose) message("\nChecking individual posteriors:")
   for(i in seq_along(pns)){
     if(verbose) message("- '", pns[i], "'")
-    try(check_pdb_posterior(pdb_posterior(x = pns[i], pdb), run_stan_code_checks = run_stan_code_checks, verbose = FALSE))
+    res <- try(check_pdb_posterior(pdb_posterior(x = pns[i], pdb), run_stan_code_checks = run_stan_code_checks, verbose = FALSE))
+    if(inherits(res, "try-error")) return_status <- 1L
   }
 
   if(verbose) message("\nChecking posterior database:")
-  try(check_pdb_aliases(pdb))
-  if(verbose) message("- Aliases are ok.")
+  res <- try(check_pdb_aliases(pdb))
+  if(inherits(res, "try-error")) {return_status <- 1L} else {
+  if(verbose) message("- Aliases are ok.")}
 
-  try(check_pdb_all_models_have_posterior(pdb))
-  if(verbose) message("- All models are part of a posterior.")
-  try(check_pdb_all_data_have_posterior(pdb))
-  if(verbose) message("- All data are part of a posterior.")
-  try(check_pdb_all_reference_posteriors_have_posterior(pdb))
-  if(verbose) message("- All reference posteriors are part of a posterior.")
+  res <- try(check_pdb_all_models_have_posterior(pdb))
+  if(inherits(res, "try-error")) {return_status <- 1L} else {
+  if(verbose) message("- All models are part of a posterior.")}
+
+  res <- try(check_pdb_all_data_have_posterior(pdb))
+  if(inherits(res, "try-error")) {return_status <- 1L} else {
+  if(verbose) message("- All data are part of a posterior.")}
+
+  res <- try(check_pdb_all_reference_posteriors_have_posterior(pdb))
+  if(inherits(res, "try-error")) {return_status <- 1L} else {
+  if(verbose) message("- All reference posteriors are part of a posterior.")}
+
   try(check_pdb_references(pdb))
-  if(verbose) message("- All bibliography elements exist in a data, model or posterior object.")
+  if(inherits(res, "try-error")) {return_status <- 1L} else {
+  if(verbose) message("- All bibliography elements exist in a data, model or posterior object.")}
 
-  if(verbose) message("\nPosterior database is ok.\n")
-  invisible(TRUE)
+  if(verbose & return_status == 0L) message("\nPosterior database is ok.\n")
+  invisible(return_status)
 }
 
 
