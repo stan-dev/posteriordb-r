@@ -196,9 +196,9 @@ remove_pdb(rp, pdbl)
 
 ```{r cleanup, eval=TRUE, echo=FALSE}
 # Cleanup
-remove_pdb(mc, pdbl)
-remove_pdb(dat, pdbl)
-remove_pdb(po, pdbl)
+invisible(remove_pdb(mc, pdbl))
+invisible(remove_pdb(dat, pdbl))
+invisible(remove_pdb(po, pdbl))
 ```
 
 
