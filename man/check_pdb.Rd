@@ -16,7 +16,12 @@
 \alias{check_pdb_all_reference_posteriors_have_posterior}
 \title{Check the content a posterior database}
 \usage{
-check_pdb(pdb, posterior_idx = NULL)
+check_pdb(
+  pdb,
+  posterior_names_to_check = NULL,
+  run_stan_code_checks = TRUE,
+  verbose = TRUE
+)
 
 check_pdb_read_posteriors(pdb, posterior_idx = NULL)
 
@@ -45,7 +50,7 @@ check_pdb_all_reference_posteriors_have_posterior(pdb)
 \arguments{
 \item{pdb}{a \code{pdb} object}
 
-\item{posterior_idx}{an index vector indicating what posteriors to check.}
+\item{posterior_names_to_check}{an vector indicating what posteriors to check in the pdb. Default is NULL (all).}
 
 \item{posterior_list}{a list of \code{pdb_posterior} objects.}
 

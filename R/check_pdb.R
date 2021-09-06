@@ -1,7 +1,7 @@
 #' Check the content a posterior database
 #'
 #' @param pdb a \code{pdb} object
-#' @param posterior_idx an index vector indicating what posteriors to check.
+#' @param posterior_names_to_check an vector indicating what posteriors to check in the pdb. Default is NULL (all).
 #' @param posterior_list a list of \code{pdb_posterior} objects.
 #' @param po a \code{pdb_posterior} object.
 #'
@@ -20,40 +20,41 @@
 #'
 #' @return a boolean indicating if the pdb works as it should.
 #'
-check_pdb <- function(pdb, posterior_idx = NULL) {
+check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = TRUE, verbose = TRUE) {
   checkmate::assert_class(pdb, "pdb")
-  checkmate::assert_integerish(posterior_idx, null.ok = TRUE)
+  checkmate::assert_choice(posteriors_to_check, choices = posterior_names(pdb), null.ok = TRUE)
+  checkmate::assert_flag(verbose)
 
-  message("Checking posterior database...")
+  if(verbose) message("Checking posterior database...")
 
-  pl <- check_pdb_read_posteriors(pdb, posterior_idx)
-  message("- All posteriors can be read.")
-
-  check_pdb_read_model_code(pl)
-  message("- All model_code can be read.")
-
-  check_pdb_read_data(pl)
-  message("- All data can be read.")
-
-  check_pdb_read_reference_posterior_draws(pl)
-  message("- All reference_posteriors_draws can be read.")
-
-  check_pdb_aliases(pdb)
-  message("- Aliases are ok.")
-
-  if(is.null(posterior_idx)){
-    suppressMessages(check_pdb_references(pdb))
-    message("- References and bibliography are ok.")
-
-    check_pdb_all_models_have_posterior(pdb)
-    check_pdb_all_data_have_posterior(pdb)
-    check_pdb_all_reference_posteriors_have_posterior(pdb)
-    message("- All data, models and reference posteriors are part of a posterior.")
+  if(!is.null(posterior_names_to_check)) {
+    pns <- posterior_names_to_check
+  } else {
+    pns <- posterior_names(pdb)
   }
 
-  message("\nPosterior database is ok.\n")
+  if(verbose) message("\nChecking individual posteriors:")
+  for(i in seq_along(pns)){
+    if(verbose) message("- '", pns[i], "' is ok.")
+    check_pdb_posterior(pdb_posterior(x = pns[i], pdb), run_stan_code_checks = run_stan_code_checks, verbose = FALSE)
+  }
+
+  if(verbose) message("\nChecking posterior database:")
+  check_pdb_aliases(pdb)
+  if(verbose) message("- Aliases are ok.")
+
+  check_pdb_all_models_have_posterior(pdb)
+  if(verbose) message("- All models are part of a posterior.")
+  check_pdb_all_data_have_posterior(pdb)
+  if(verbose) message("- All data are part of a posterior.")
+  check_pdb_all_reference_posteriors_have_posterior(pdb)
+  if(verbose) message("- All reference posteriors are part of a posterior.")
+
+  if(verbose) message("\nPosterior database is ok.\n")
   invisible(TRUE)
 }
+
+
 
 #' @rdname check_pdb
 check_pdb_read_posteriors <- function(pdb, posterior_idx = NULL){

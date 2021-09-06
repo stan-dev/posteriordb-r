@@ -27,9 +27,6 @@ check_pdb_posterior <- function(po, run_stan_code_checks = TRUE, verbose = TRUE)
   check_pdb_read_reference_posterior_draws(list(po))
   if(verbose) message("- The reference_posteriors_draws can be read (if it exists).")
 
-  check_pdb_aliases(pdb(po))
-  if(verbose) message("- Aliases are ok.")
-
   if(run_stan_code_checks){
     check_posterior_stan_syntax(po)
     if(verbose) message("- Stan syntax is ok.")
@@ -37,9 +34,6 @@ check_pdb_posterior <- function(po, run_stan_code_checks = TRUE, verbose = TRUE)
     check_pdb_posterior_run_stan(po)
     if(verbose) message("- Stan can be run for the posterior.")
   }
-
-  suppressMessages(check_pdb_references(pdb(po)))
-  if(verbose) message("- References and bibliography are ok.")
 
   if(verbose) message("\nPosterior is ok.\n")
   invisible(TRUE)
