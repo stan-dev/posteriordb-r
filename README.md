@@ -1,5 +1,4 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/stan-dev/posteriordb-r/actions/workflows/check-release.yaml/badge.svg)](https://github.com/stan-dev/posteriordb-r/actions/workflows/check-release.yaml)
@@ -7,14 +6,16 @@
 coverage](https://codecov.io/gh/stan-dev/posteriordb-r/branch/main/graph/badge.svg)](https://codecov.io/gh/stan-dev/posteriordb-r?branch=main)
 <!-- badges: end -->
 
-# `posteriordb-r`: an R package to work with `posteriordb`
+`posteriordb-r`: an R package to work with `posteriordb`
+========================================================
 
 This repository contain the R package to easily work with the
 `posteriordb` repository. The R package included database contain
 convenience functions to access data, model code and information for
 individual posteriors, models, data and draws.
 
-## Installation
+Installation
+------------
 
 To install the package To install only the R package and then access the
 posteriors remotely, just install the package from GitHub using the
@@ -30,7 +31,8 @@ To load the package, just run.
 library(posteriordb)
 ```
 
-## Connect to the posterior database
+Connect to the posterior database
+---------------------------------
 
 First we create the posterior database to use, here we can use the
 database locally (if the `posteriordb` repo is cloned).
@@ -52,7 +54,14 @@ my_pdb <- pdb_github()
 
 Independent of the posterior database used, the following works for all.
 
-## Access content
+Contributing content using R
+----------------------------
+
+If you want to contribute to a posteriordb, see
+[https://github.com/stan-dev/posteriordb-r/blob/main/docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+
+Access content
+--------------
 
 To list the posteriors available in the database, use
 `posterior_names()`.
@@ -159,14 +168,14 @@ dfp <- data_file_path(po)
 dfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpummtnT/posteriordb_cache/data/data/eight_schools.json"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpfZwTgZ/posteriordb_cache/data/data/eight_schools.json"
 
 ``` r
 scfp <- stan_code_file_path(po)
 scfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpummtnT/posteriordb_cache/models/stan/eight_schools_centered.stan"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpfZwTgZ/posteriordb_cache/models/stan/eight_schools_centered.stan"
 
 We can also access information regarding the model and the data used to
 compute the posterior.
@@ -297,3 +306,9 @@ info(rpd)
     ##   thin: 10
     ##   seed: 4711
     ##     adapt_delta: 0.95
+
+Contributing content using R
+----------------------------
+
+If you want to contribute to a posteriordb, see
+[https://github.com/stan-dev/posteriordb-r/blob/main/docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).

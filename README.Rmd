@@ -54,6 +54,9 @@ my_pdb <- pdb_github()
 
 Independent of the posterior database used, the following works for all.
 
+## Contributing content using R
+
+If you want to contribute to a posteriordb, see [https://github.com/stan-dev/posteriordb-r/blob/main/docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 ## Access content
 
@@ -153,3 +156,8 @@ rpi
 
 info(rpd)
 ```
+
+## Contributing content using R
+
+If you want to contribute to a posteriordb, see [https://github.com/stan-dev/posteriordb-r/blob/main/docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+
