@@ -2,14 +2,11 @@
 % Please edit documentation in R/check_pdb.R
 \name{check_pdb}
 \alias{check_pdb}
-\alias{check_pdb_read_posteriors}
 \alias{check_pdb_read_model_code}
 \alias{check_pdb_aliases}
 \alias{check_pdb_read_data}
 \alias{check_pdb_read_reference_posterior_draws}
-\alias{check_pdb_run_stan}
 \alias{check_pdb_posterior_run_stan}
-\alias{check_pdb_stan_syntax}
 \alias{check_pdb_references}
 \alias{check_pdb_all_models_have_posterior}
 \alias{check_pdb_all_data_have_posterior}
@@ -23,8 +20,6 @@ check_pdb(
   verbose = TRUE
 )
 
-check_pdb_read_posteriors(pdb, posterior_idx = NULL)
-
 check_pdb_read_model_code(posterior_list)
 
 check_pdb_aliases(pdb)
@@ -33,11 +28,7 @@ check_pdb_read_data(posterior_list)
 
 check_pdb_read_reference_posterior_draws(posterior_list)
 
-check_pdb_run_stan(pdb, posterior_idx = NULL)
-
 check_pdb_posterior_run_stan(po)
-
-check_pdb_stan_syntax(pdb, posterior_idx = NULL)
 
 check_pdb_references(pdb, posterior_idx = NULL)
 
@@ -56,11 +47,11 @@ check_pdb_all_reference_posteriors_have_posterior(pdb)
 
 \item{verbose}{should check results be printed?}
 
-\item{posterior_idx}{an vector with posterior indecies. Default is NULL (all).}
-
 \item{posterior_list}{a list of \code{pdb_posterior} objects.}
 
 \item{po}{a \code{pdb_posterior} object.}
+
+\item{posterior_idx}{an vector with posterior indecies. Default is NULL (all).}
 }
 \value{
 a boolean indicating if the pdb works as it should.
@@ -72,7 +63,6 @@ Check the content a posterior database
 [check_pdb()] checks that the content exists as specified
 [check_pdb_run_stan()] test to run all posteriors with stan models.
 [check_pdb_stan_syntax()] check that all stan model code files can be parsed.
-[check_pdb_read_posteriors()] check that posteriors can be read.
 [check_pdb_aliases()] check that all alias are correct.
 [check_pdb_read_model_code()] check that posteriors can be read.
 [check_pdb_posteriors()] check a vector of posterior names.
