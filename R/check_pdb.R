@@ -3,6 +3,8 @@
 #' @param pdb a \code{pdb} object
 #' @param posterior_names_to_check an vector indicating what posteriors to check in the pdb. Default is NULL (all).
 #' @param posterior_list a list of \code{pdb_posterior} objects.
+#' @param run_stan_code_checks should checks using Stan be run?
+#' @param verbose should check results be printed?
 #' @param po a \code{pdb_posterior} object.
 #'
 #' @details
@@ -20,9 +22,10 @@
 #'
 #' @return a boolean indicating if the pdb works as it should.
 #'
+#' @export
 check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = TRUE, verbose = TRUE) {
   checkmate::assert_class(pdb, "pdb")
-  checkmate::assert_choice(posterior_names_to_check, choices = posterior_names(pdb), null.ok = TRUE)
+  checkmate::assert_subset(posterior_names_to_check, choices = posterior_names(pdb))
   checkmate::assert_flag(verbose)
 
   if(verbose) message("Checking posterior database...")

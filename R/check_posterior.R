@@ -4,7 +4,7 @@
 #' The function checks a posterior is consistent.
 #'
 #' @param po a [pdb_posterior] to check.
-#' @param run_stan_code_checks should checks using Rstan be run?
+#' @param run_stan_code_checks should checks using Stan be run?
 #' @param verbose should check results be printed?
 #'
 #' @export

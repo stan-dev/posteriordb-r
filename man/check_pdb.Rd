@@ -52,6 +52,10 @@ check_pdb_all_reference_posteriors_have_posterior(pdb)
 
 \item{posterior_names_to_check}{an vector indicating what posteriors to check in the pdb. Default is NULL (all).}
 
+\item{run_stan_code_checks}{should checks using Stan be run?}
+
+\item{verbose}{should check results be printed?}
+
 \item{posterior_list}{a list of \code{pdb_posterior} objects.}
 
 \item{po}{a \code{pdb_posterior} object.}

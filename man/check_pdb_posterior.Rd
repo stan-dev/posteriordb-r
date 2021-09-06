@@ -9,7 +9,7 @@ check_pdb_posterior(po, run_stan_code_checks = TRUE, verbose = TRUE)
 \arguments{
 \item{po}{a [pdb_posterior] to check.}
 
-\item{run_stan_code_checks}{should checks using Rstan be run?}
+\item{run_stan_code_checks}{should checks using Stan be run?}
 
 \item{verbose}{should check results be printed?}
 }
