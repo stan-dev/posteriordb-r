@@ -38,21 +38,21 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
 
   if(verbose) message("\nChecking individual posteriors:")
   for(i in seq_along(pns)){
-    if(verbose) message("- '", pns[i], "' is ok.")
-    check_pdb_posterior(pdb_posterior(x = pns[i], pdb), run_stan_code_checks = run_stan_code_checks, verbose = FALSE)
+    if(verbose) message("- '", pns[i], "'")
+    try(check_pdb_posterior(pdb_posterior(x = pns[i], pdb), run_stan_code_checks = run_stan_code_checks, verbose = FALSE))
   }
 
   if(verbose) message("\nChecking posterior database:")
-  check_pdb_aliases(pdb)
+  try(check_pdb_aliases(pdb))
   if(verbose) message("- Aliases are ok.")
 
-  check_pdb_all_models_have_posterior(pdb)
+  try(check_pdb_all_models_have_posterior(pdb))
   if(verbose) message("- All models are part of a posterior.")
-  check_pdb_all_data_have_posterior(pdb)
+  try(check_pdb_all_data_have_posterior(pdb))
   if(verbose) message("- All data are part of a posterior.")
-  check_pdb_all_reference_posteriors_have_posterior(pdb)
+  try(check_pdb_all_reference_posteriors_have_posterior(pdb))
   if(verbose) message("- All reference posteriors are part of a posterior.")
-  check_pdb_references(pdb)
+  try(check_pdb_references(pdb))
   if(verbose) message("- All bibliography elements exist in a data, model or posterior object.")
 
   if(verbose) message("\nPosterior database is ok.\n")
