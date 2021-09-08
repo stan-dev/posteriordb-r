@@ -33,7 +33,6 @@ posterior.character <- function(x, pdb = pdb_default(), ...) {
 #' @rdname posterior
 #' @export
 posterior.list <- function(x, pdb = pdb_default(), ...) {
-  class(x) <- "pdb_posterior"
   if(!is.null(x$pdb_model_code) & !is.null(x$pdb_data)){
     # We setup the posterior object from a data and model object
     mci <- info(x$pdb_model_code)
@@ -49,9 +48,6 @@ posterior.list <- function(x, pdb = pdb_default(), ...) {
   if(is.null(x$reference_posterior_name)){
     x["reference_posterior_name"] <- list(NULL)
   }
-  if(is.null(x$dimensions)){
-    stop("posterior dimensions are missing.")
-  }
   if(is.null(x$added_by)){
     x$added_by <- unname(Sys.info()["user"])
     message("'added_by' set to '", x$added_by, "'")
@@ -59,7 +55,14 @@ posterior.list <- function(x, pdb = pdb_default(), ...) {
   if(is.null(x$added_date)){
     x$added_date <- Sys.Date()
   }
+  if(is.null(x$dimensions)){
+    suppressWarnings(otpt <- utils::capture.output(so <- run_stan.pdb_posterior(x, stan_args = list(iter = 2, warmup = 0, chains = 1))))
+    stop("posterior dimensions are missing.")
+  }
+  x <- x[pdb_posterior_must_include()]
+
   pdb(x) <- pdb
+  class(x) <- "pdb_posterior"
   assert_pdb_posterior(x)
   x
 }
@@ -77,15 +80,19 @@ print.pdb_posterior <- function(x, ...) {
   invisible(x)
 }
 
-assert_pdb_posterior <- function(x) {
-  checkmate::assert_class(x, "pdb_posterior")
-  checkmate::assert_list(x)
+
+pdb_posterior_must_include <- function(){
   must.include <- c(
     "name", "model_name", "data_name", "reference_posterior_name", "dimensions",
     "model_info", "data_info",
     "added_by", "added_date"
   )
-  checkmate::assert_names(names(x), must.include = must.include)
+}
+
+assert_pdb_posterior <- function(x) {
+  checkmate::assert_class(x, "pdb_posterior")
+  checkmate::assert_list(x)
+  checkmate::assert_names(names(x), must.include = pdb_posterior_must_include())
   checkmate::assert_list(x$dimensions)
   checkmate::assert_named(x$dimensions)
   checkmate::assert_class(x$added_date, "Date")
