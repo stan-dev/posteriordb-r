@@ -92,3 +92,38 @@ write_pdb.pdb_posterior <- function(x, pdb,  overwrite = FALSE, ...){
   class(x) <- c(class(x), "list")
   write_json_to_path(x, "posteriors", pdb, zip = FALSE, info = FALSE, overwrite = overwrite)
 }
+
+
+#' Rename a pdb object
+#'
+#' @param x an object to rename
+#' @param new_name the new name of the object
+#' @param ... further arguments (not in use)
+#'
+#' @export
+rename_pdb <- function(x, new_name, ...){
+  checkmate::assert_string(new_name)
+  UseMethod("rename_pdb")
+}
+
+#' @rdname rename_pdb
+#' @export
+rename_pdb.pdb_data <- function(x, new_name, ...){
+  old_x <- x
+  di <- info(x)
+  di$name <- new_name
+  di$data_file <- paste0("data/data/", new_name, ".json")
+  info(x) <- di
+  write_pdb(x, pdb(x))
+  remove_pdb(old_x, pdb(x))
+}
+
+#' @rdname rename_pdb
+#' @export
+rename_pdb.pdb_posterior <- function(x, new_name, ...){
+  old_x <- x
+  x$name <- new_name
+  write_pdb(x, pdb(x))
+  remove_pdb(old_x, pdb(x))
+}
+

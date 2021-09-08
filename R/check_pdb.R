@@ -22,13 +22,14 @@
 #' @return a boolean indicating if the pdb works as it should.
 #'
 #' @export
-check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = TRUE, verbose = TRUE) {
+check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = FALSE, verbose = TRUE) {
   checkmate::assert_class(pdb, "pdb")
   checkmate::assert_choice(pdb_type(pdb), "local")
   checkmate::assert_subset(posterior_names_to_check, choices = posterior_names(pdb))
   checkmate::assert_flag(verbose)
 
   if(verbose) message("Checking posterior database...")
+  if(verbose & !run_stan_code_checks) message("Checking of stan code and syntax is ignored.")
   return_status <- 0L
 
   if(!is.null(posterior_names_to_check)) {

@@ -17,7 +17,7 @@
 check_pdb(
   pdb,
   posterior_names_to_check = NULL,
-  run_stan_code_checks = TRUE,
+  run_stan_code_checks = FALSE,
   verbose = TRUE
 )
 
