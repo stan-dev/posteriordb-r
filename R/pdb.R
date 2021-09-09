@@ -175,21 +175,6 @@ posterior_names <- function(x = pdb_default(), ...) {
   pn(x, ...)
 }
 
-#' @rdname posterior_names
-#' @export
-model_names <- function(x = pdb_default(), ...){
-  all_pn <- pn(x)
-  unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))
-}
-
-#' @rdname posterior_names
-#' @export
-data_names <- function(x = pdb_default(), ...){
-  all_pn <- pn(x)
-  unlist(lapply(strsplit(all_pn, "-"), function(x) x[1]))
-}
-
-
 pn <- function(x, ...) {
   UseMethod("pn")
 }
@@ -202,14 +187,14 @@ pn.pdb_local <- function(x, ...) {
 pn.pdb_model_code <- function(x, ...) {
   all_pn <- pn(pdb(x))
   mn <- info(x)$name
-  all_mn <- model_names(pdb(x))
+  all_mn <- unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))
   all_pn[all_mn == mn]
 }
 
 pn.pdb_data <- function(x, ...) {
   all_pn <- pn(pdb(x))
   dn <- info(x)$name
-  all_dn <- data_names(pdb(x))
+  all_dn <- unlist(lapply(strsplit(all_pn, "-"), function(x) x[1]))
   all_pn[all_dn == dn]
 }
 
