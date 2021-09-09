@@ -179,6 +179,28 @@ posterior_names <- function(x = pdb_default(), ...) {
 #' @export
 posterior_name <- posterior_names
 
+#' @rdname posterior_names
+#' @export
+model_name <- function(x = pdb_default(), ...){
+  all_pn <- pn(x)
+  unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))
+}
+
+#' @rdname posterior_names
+#' @export
+model_names <- model_name
+
+#' @rdname posterior_names
+#' @export
+data_name <- function(x = pdb_default(), ...){
+  all_pn <- pn(x)
+  unlist(lapply(strsplit(all_pn, "-"), function(x) x[1]))
+}
+
+#' @rdname posterior_names
+#' @export
+data_names <- data_name
+
 pn <- function(x, ...) {
   UseMethod("pn")
 }
@@ -191,15 +213,15 @@ pn.pdb_local <- function(x, ...) {
 pn.pdb_model_code <- function(x, ...) {
   all_pn <- pn(pdb(x))
   mn <- info(x)$name
-  all_models <- unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))
-  all_pn[all_models == mn]
+  all_mn <- model_names(pdb(x))
+  all_pn[all_mn == mn]
 }
 
 pn.pdb_data <- function(x, ...) {
   all_pn <- pn(pdb(x))
   dn <- info(x)$name
-  all_data <- unlist(lapply(strsplit(all_pn, "-"), function(x) x[1]))
-  all_pn[all_data == dn]
+  all_dn <- data_names(pdb(x))
+  all_pn[all_dn == dn]
 }
 
 pn.pdb_model_info <- function(x, ...) {
@@ -225,6 +247,7 @@ pdb_file_path <- function(pdb, ...){
 pdb_file_path.pdb_local <- function(pdb, ...){
   file.path(pdb$pdb_local_endpoint, ...)
 }
+
 
 #' Get all existing model names from a posterior database
 #'
