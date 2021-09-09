@@ -29,7 +29,8 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
   checkmate::assert_flag(verbose)
 
   if(verbose) message("Checking posterior database...")
-  if(verbose & !run_stan_code_checks) message("Checking of stan code and syntax is ignored.")
+  if(verbose & !run_stan_code_checks) message("No checking of Stan code and syntax.")
+  if(verbose & run_stan_code_checks) message("Checking that Stan can be run for posteriors.")
   return_status <- 0L
 
   if(!is.null(posterior_names_to_check)) {
@@ -45,7 +46,8 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
     if(inherits(res, "try-error")) return_status <- 1L
   }
 
-  if(verbose) message("\nChecking posterior database:")
+
+  if(verbose) message("\nChecking general posterior database:")
   res <- try(check_pdb_aliases(pdb))
   if(inherits(res, "try-error")) {return_status <- 1L} else {
   if(verbose) message("- Aliases are ok.")}
