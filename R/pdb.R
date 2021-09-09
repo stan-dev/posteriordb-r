@@ -181,25 +181,18 @@ posterior_name <- posterior_names
 
 #' @rdname posterior_names
 #' @export
-model_name <- function(x = pdb_default(), ...){
+model_names <- function(x = pdb_default(), ...){
   all_pn <- pn(x)
   unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))
 }
 
 #' @rdname posterior_names
 #' @export
-model_names <- model_name
-
-#' @rdname posterior_names
-#' @export
-data_name <- function(x = pdb_default(), ...){
+data_names <- function(x = pdb_default(), ...){
   all_pn <- pn(x)
   unlist(lapply(strsplit(all_pn, "-"), function(x) x[1]))
 }
 
-#' @rdname posterior_names
-#' @export
-data_names <- data_name
 
 pn <- function(x, ...) {
   UseMethod("pn")
