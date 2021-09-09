@@ -163,8 +163,13 @@ pdb_version.pdb_local <- function(pdb, ...){
 
 #' Get all existing posterior names from a posterior database or posterior objects.
 #'
-#' @param x a \code{pdb}, \code{posterior} object or a list of \code{posterior} objects.
+#' @param x a \code{pdb}, \code{pdb_model_code}, \code{pdb_data}, \code{posterior} object or a list of \code{posterior} objects.
 #' @param ... further arguments supplied to specific methods (not in use)
+#'
+#' @details
+#' If a \code{pdb_model_code} or a \code{pdb_data} object is supplied, the
+#' function returns the name of all posteriors that uses the data or the model.
+#'
 #' @export
 posterior_names <- function(x = pdb_default(), ...) {
   pn(x, ...)
@@ -181,6 +186,24 @@ pn <- function(x, ...) {
 pn.pdb_local <- function(x, ...) {
   pns <- dir(pdb_file_path(x, "posteriors"))
   remove_file_extension(pns)
+}
+
+pn.pdb_model_code <- function(x, ...) {
+  all_pn <- pn(pdb(x))
+  mn <- info(x)$name
+  all_models <- unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))
+  all_pn[all_models == mn]
+}
+
+pn.pdb_data <- function(x, ...) {
+  all_pn <- pn(pdb(x))
+  dn <- info(x)$name
+  all_data <- unlist(lapply(strsplit(all_pn, "-"), function(x) x[1]))
+  all_pn[all_data == dn]
+}
+
+pn.pdb_model_info <- function(x, ...) {
+  all_names <- pn(pdb(x))
 }
 
 pn.list <- function(x, ...) {

@@ -10,10 +10,14 @@ posterior_names(x = pdb_default(), ...)
 posterior_name(x = pdb_default(), ...)
 }
 \arguments{
-\item{x}{a \code{pdb}, \code{posterior} object or a list of \code{posterior} objects.}
+\item{x}{a \code{pdb}, \code{pdb_model_code}, \code{pdb_data}, \code{posterior} object or a list of \code{posterior} objects.}
 
 \item{...}{further arguments supplied to specific methods (not in use)}
 }
 \description{
 Get all existing posterior names from a posterior database or posterior objects.
+}
+\details{
+If a \code{pdb_model_code} or a \code{pdb_data} object is supplied, the
+function returns the name of all posteriors that uses the data or the model.
 }
