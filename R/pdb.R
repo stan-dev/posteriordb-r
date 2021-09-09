@@ -177,10 +177,6 @@ posterior_names <- function(x = pdb_default(), ...) {
 
 #' @rdname posterior_names
 #' @export
-posterior_name <- posterior_names
-
-#' @rdname posterior_names
-#' @export
 model_names <- function(x = pdb_default(), ...){
   all_pn <- pn(x)
   unlist(lapply(strsplit(all_pn, "-"), function(x) x[2]))

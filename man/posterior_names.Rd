@@ -2,14 +2,11 @@
 % Please edit documentation in R/pdb.R
 \name{posterior_names}
 \alias{posterior_names}
-\alias{posterior_name}
 \alias{model_names}
 \alias{data_names}
 \title{Get all existing posterior names from a posterior database or posterior objects.}
 \usage{
 posterior_names(x = pdb_default(), ...)
-
-posterior_name(x = pdb_default(), ...)
 
 model_names(pdb = pdb_default(), ...)
 
