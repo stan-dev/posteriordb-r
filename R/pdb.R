@@ -175,6 +175,10 @@ posterior_names <- function(x = pdb_default(), ...) {
   pn(x, ...)
 }
 
+#' @rdname posterior_names
+#' @export
+posterior_name <- posterior_names
+
 pn <- function(x, ...) {
   UseMethod("pn")
 }
