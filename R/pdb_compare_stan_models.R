@@ -16,7 +16,7 @@ pdb_compare_stan_models <- function(po, new_stan_model_code_file, upar_values = 
   # Do hash-check and warn if the exact same code is used
   utils::capture.output(sm1 <- suppressWarnings(posteriordb:::run_stan.pdb_posterior(po, stan_args = list(iter = 2, warmup = 0, chains = 1))))
   posteriordb:::pdb_clear_cache()
-  utils::capture.output(sm2 <- suppressWarnings(rstan::stan(file = new_stan_model_code, data = get_data(po), iter = 2, warmup = 0, chains = 1)))
+  utils::capture.output(sm2 <- suppressWarnings(rstan::stan(file = new_stan_model_code_file, data = get_data(po), iter = 2, warmup = 0, chains = 1)))
   checkmate::assert_true(rstan::get_num_upars(sm1) == rstan::get_num_upars(sm2))
   num_upars <- rstan::get_num_upars(sm1)
 
