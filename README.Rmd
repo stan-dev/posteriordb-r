@@ -12,7 +12,7 @@ output:
 
 # `posteriordb-r`: an R package to work with `posteriordb`
 
-This repository contain the R package to easily work with the `posteriordb` repository. The R package included database contain convenience functions to access data, model code and information for individual posteriors, models, data and draws.
+This repository contain the R package to easily work with the [posteriordb](https://github.com/stan-dev/posteriordb) repository. The R package included database contain convenience functions to access data, model code and information for individual posteriors, models, data and draws.
 
 
 ## Installation

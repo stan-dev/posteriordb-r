@@ -10,9 +10,10 @@ coverage](https://codecov.io/gh/stan-dev/posteriordb-r/branch/main/graph/badge.s
 ========================================================
 
 This repository contain the R package to easily work with the
-`posteriordb` repository. The R package included database contain
-convenience functions to access data, model code and information for
-individual posteriors, models, data and draws.
+[posteriordb](https://github.com/stan-dev/posteriordb) repository. The R
+package included database contain convenience functions to access data,
+model code and information for individual posteriors, models, data and
+draws.
 
 Installation
 ------------
@@ -83,8 +84,8 @@ mn <- model_names(my_pdb)
 head(mn)
 ```
 
-    ## [1] "accel_gp"           "accel_splines"      "arK"               
-    ## [4] "arma11"             "blr"                "covid19imperial_v2"
+    ## [1] "2pl_latent_reg_irt" "accel_gp"           "accel_splines"     
+    ## [4] "arK"                "arma11"             "blr"
 
 ``` r
 dn <- data_names(my_pdb)
@@ -168,14 +169,14 @@ dfp <- data_file_path(po)
 dfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpfZwTgZ/posteriordb_cache/data/data/eight_schools.json"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpEoOiTD/posteriordb_cache/data/data/eight_schools.json"
 
 ``` r
 scfp <- stan_code_file_path(po)
 scfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpfZwTgZ/posteriordb_cache/models/stan/eight_schools_centered.stan"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpEoOiTD/posteriordb_cache/models/stan/eight_schools_centered.stan"
 
 We can also access information regarding the model and the data used to
 compute the posterior.
