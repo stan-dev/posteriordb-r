@@ -14,15 +14,15 @@ pdb_compare_stan_models <- function(po, new_stan_model_code_file, upar_values = 
   if(digest::sha1(mc1) == digest::sha1(mc2)) warning("The exact same model code is compared.", call. = FALSE)
 
   # Do hash-check and warn if the exact same code is used
-  utils::capture.output(sm1 <- suppressWarnings(posteriordb:::run_stan.pdb_posterior(po, stan_args = list(iter = 2, warmup = 0, chains = 1))))
-  posteriordb:::pdb_clear_cache()
+  utils::capture.output(sm1 <- suppressWarnings(run_stan.pdb_posterior(po, stan_args = list(iter = 2, warmup = 0, chains = 1))))
+  pdb_clear_cache()
   utils::capture.output(sm2 <- suppressWarnings(rstan::stan(file = new_stan_model_code_file, data = get_data(po), iter = 2, warmup = 0, chains = 1)))
   checkmate::assert_true(rstan::get_num_upars(sm1) == rstan::get_num_upars(sm2))
   num_upars <- rstan::get_num_upars(sm1)
 
   if(is.null(upar_values)){
     N <- 100
-    upar_values <- lapply(rep(num_upars, N), rnorm)
+    upar_values <- lapply(rep(num_upars, N), stats::rnorm)
   }
   checkmate::assert_list(upar_values)
   for(i in seq_along(upar_values)){

@@ -42,6 +42,7 @@ test_that("Check that reference_posterior works as expected", {
   expect_silent(pd1thin <- thin_draws.pdb_reference_posterior_draws(x = pd1, thin = 2))
   expect_equal(posterior::ndraws(pd1thin), posterior::ndraws(pd1)/2)
 
+  skip("LDA model will work from version 0.4")
   expect_silent(po <- posterior("prideprejustice_chapter-ldaK5", pdb_test))
   expect_error(gs <- reference_posterior_draws(po),
                regexp = "There is currently no reference posterior for this posterior.")

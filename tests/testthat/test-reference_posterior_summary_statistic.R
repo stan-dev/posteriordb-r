@@ -17,6 +17,7 @@ test_that("Check that reference_posterior_summary_statistics work as expected", 
 
   expect_output(print(rpm1), "Posterior: eight_schools-eight_schools_noncentered")
 
+  skip("LDA model will work from version 0.4")
   expect_silent(po <- posterior("prideprejustice_chapter-ldaK5", pdb_test))
   expect_error(rpm <- reference_posterior_summary_statistic(po, type = "mean"),
                regexp = "There is currently no reference posterior for this posterior.")
