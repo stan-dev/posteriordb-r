@@ -75,6 +75,6 @@ assert_model_info <- function(x){
   checkmate::assert_string(x$description, null.ok = TRUE)
 
   checkmate::assert_character(x$references, null.ok = TRUE)
-  checkmate::assert_character(x$urls)
+  checkmate::assert_character(x$urls, null.ok = TRUE)
   checkmate::assert_character(x$keywords, null.ok = TRUE)
 }

@@ -12,7 +12,7 @@ Authors@R: c(person("Mans", "Magnusson", email = "mans.magnusson@gmail.com",
 Maintainer: Mans Magnusson <mans.magnusson@gmail.com>
 Description: R functionality of easy handling of the posteriordb posteriors.
 License: BSD_3_clause + file LICENSE
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
 Encoding: UTF-8
 Depends:
   R (>= 3.5.0)
