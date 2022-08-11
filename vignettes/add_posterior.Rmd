@@ -31,6 +31,7 @@ Sys.setenv(PDB_PATH = "[path to local posteriordb]")
 
 # We setup a connection to the local posteriordb
 pdbl <- pdb_local()
+
 ```
 
 ```{r, message=FALSE, eval=TRUE, echo=FALSE}
@@ -61,7 +62,7 @@ x <- list(name = "test_eight_schools_data",
           added_by = "Stanislaw Ulam")
 
 # Create the data info object
-di <- pdb_data_info(x)
+di <- as.pdb_data_info(x)
 
 # Setup the data for eight schools
 eight_schools <- list(J = 8L,
@@ -69,7 +70,7 @@ eight_schools <- list(J = 8L,
                       sigma = as.integer(c(15, 10, 16, 11, 9, 11, 10, 18)))
 
 # Create the data object
-dat <- pdb_data(eight_schools, info = di)
+dat <- as.pdb_data(eight_schools, info = di)
 
 dat
 info(dat)
@@ -106,7 +107,7 @@ x <- list(name = "test_eight_schools_model",
           references = NULL,
           added_by = "Stanislaw Ulam",
           added_date = Sys.Date())
-mi <- pdb_model_info(x)
+mi <- as.pdb_model_info(x)
 
 # Read in Stan model and compile the model (using rstan)
 smc <- "
@@ -133,11 +134,11 @@ model {
 }
 "
 sm <- rstan::stan_model(model_code = smc)
-mc <- model_code(sm, info = mi)
+mc <- as.model_code(sm, info = mi)
 
 # If we want to jus add the raw stan code, we can simply use that instead.
 # Although we need to specify that it is stan code.
-mc <- model_code(smc, info = mi, framework = "stan")
+mc <- as.model_code(smc, info = mi, framework = "stan", pdb = pdbl)
 
 # The model object to include
 mc
