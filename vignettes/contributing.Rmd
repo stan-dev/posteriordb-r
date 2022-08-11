@@ -14,19 +14,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-First clone the `posteriordb` repository for a local copy you want to update. Then install the posteriordb R package.
+First, clone the `posteriordb` repository for a local copy you want to update. Then install the posteriordb R package.
 
 ```{r, message=FALSE, eval=FALSE}
 remotes::install_github("stan-dev/posteriordb-r")
 ```
 
-As a first step we load the `posteriordb` R package and create a connection to the local posterior database. If you intend to add stan-code, also load rstan.
+As a first step, we load the `posteriordb` R package and create a connection to the local posterior database. If you intend to add stan-code, also load `rstan`.
 
 ```{r, message=FALSE, eval=FALSE}
 library(posteriordb)
 library(rstan)
 
-# Set the environment variable PDB_PATH to you local posteriordb repo as
+# Set the environment variable PDB_PATH to your local posteriordb repo as
 Sys.setenv(PDB_PATH = "[path to local posteriordb]")
 
 # We setup a connection to the local posteriordb
@@ -44,7 +44,7 @@ dotenv::load_dot_env(file = "../.env")
 pdbl <- pdb_local()
 ```
 
-Since a posterior consists of data and a model, we start by adding the data and the model to the database.
+Since a posterior consist of data and a model, we start by adding those parts.
 
 ## Adding the Data
 
@@ -87,24 +87,24 @@ write_pdb(dat, pdbl)
 write_pdb(dat, pdbl, overwrite = TRUE)
 ```
 
-If we want to remove the data object, we can simply use
+If we want to remove the data object, we can use
 ```{r, eval=FALSE}
 remove_pdb(dat, pdbl)
 ```
 
-Note that we now added a reference `rubin1981estimation` that already exists in the bibliography. If a new reference is added, it also needs to be added in the bibtex bibliography.
+Note that we now added a reference `rubin1981estimation` that already exists in the bibliography. If a new reference is added, it also needs to be added to the BibTeX bibliography.
 
 
 
 ## Adding the Model
 
-Similarly, we can add stan-files and model information as follows (this is a test case using the eight school model). Note that we compile the model code using Stan. This is not nessecary. It is possible to just add the model code right away, but it is better to check that the code compiles. 
+Similarly, we can add stan-files and model information as follows (this is a test case using the eight school model). Note that we compile the model code using Stan. Compiling is not necessary to add code but simplify. 
 
 ```{r}
 x <- list(name = "test_eight_schools_model",
-          keywords = c("test_model", "hiearchical"),
+          keywords = c("test_model", "hierarchical"),
           title = "Test Non-Centered Model for Eight Schools",
-          description = "An hiearchical model, non-centered parametrisation.",
+          description = "An hierarchical model, non-centered parametrisation.",
           urls = c("https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html"),
           framework = "stan",
           references = NULL,
@@ -143,14 +143,14 @@ mc
 info(mc)
 ```
 
-Ideally, check that the stan code compile before it is added to the posterior database. This will otherwise be checked. A simple way is to compile the model with `rstan` and then just create the model code object from the stan object directly.
+Ideally, check that the stan code compiles before it is added to the posterior database. A simple way is to compile the model with `rstan` and directly create the model code object from the stan object.
 
 ```{r, eval=FALSE}
 sm <- rstan::stan_model(model_code = smc)
 mc <- as.model_code(sm, info = mi)
 ```
 
-To add the model to the local posterior database, we again just use:
+To add the model to the local posterior database, we again use:
 ```{r, eval=FALSE}
 write_pdb(mc, pdbl)
 ```
@@ -167,7 +167,7 @@ remove_pdb(mc, pdbl)
 
 ## Adding the Posterior
 
-When we have added the data and the model we can add a posterior object connecting the model and the data. Note that we need to add the model code and data first, before adding the posterior.
+When we have added the data and the model, we can add a posterior object connecting the model and the data. We must add the model code and data before adding the posterior.
 
 ```{r}
 x <- list(pdb_model_code = mc,
@@ -182,7 +182,7 @@ x <- list(pdb_model_code = mc,
 po <- as.pdb_posterior(x)
 ```
 
-Just as with the data and model object we then use `write_pdb()` and `remove_pdb()` to add and remove the object from the local posterior database.
+As with the data and model object, we then use `write_pdb()` and `remove_pdb()` to add and remove the object from the local posterior database.
 
 ```{r, eval = FALSE}
 write_pdb(po, pdbl)
@@ -197,13 +197,13 @@ remove_pdb(mc, pdbl)
 
 ## Checking the final posterior, data and model
 
-Finally, we want to check that everything is in order with the posterior. We do this as follows. Here we skip to check that the code compiles.
+Finally, we want to check that everything is in order with the posterior. We do this as follows. Here we skip checking that the code compiles.
 
 ```{r, eval=TRUE}
 check_pdb_posterior(po, run_stan_code_checks = FALSE)
 ```
 
-If the posterior, model and data passes all checks, it can be added to the posteriordb, so it is just to open a Pull Request with the proposed posterior.
+If the posterior, model, and data pass all checks, we can add it to the posteriordb. Commit the new files in the database and open a Pull Request with the proposed posterior.
 
 ## Add Posterior Reference Draws
 
@@ -233,12 +233,12 @@ x <- list(name = posterior_name(po),
 rpi <- as.pdb_reference_posterior_info(x)
 ```
 
-The reference posterior draws info contain all information to compute the posterior using rstan. We then check that the reference posterior criteria are fulfilled and add checked diagnostics to the object.
+The reference posterior draws info contains all information to compute the posterior using rstan. We then check that the reference posterior criteria are fulfilled and add checked diagnostics to the object.
 
 ```{r, eval=FALSE}
 # Compute the reference posterior
 rp <- compute_reference_posterior_draws(rpi, pdbl)
-# Check that the draws is of suffcient quality to use as a reference posterior
+# Check that the draws are of sufficient quality to use as a reference posterior
 rp <- check_reference_posterior_draws(x = rp)
 ```
 
@@ -248,7 +248,7 @@ We can now write the reference posterior draws to the posteriordb, just as the o
 write_pdb(rp, pdbl, overwrite = TRUE)
 ```
 
-We can again check the posterior and its reference draws as follows.
+We can again check the posterior, and its reference draws as follows.
 
 ```{r, eval = FALSE}
 check_pdb_posterior(po, pdbl)
@@ -268,5 +268,4 @@ invisible(remove_pdb(dat, pdbl))
 # po <- pdb_posterior("test_eight_schools_data-test_eight_schools_model", pdbl)
 invisible(remove_pdb(po, pdbl))
 ```
-
 
