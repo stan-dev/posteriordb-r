@@ -309,7 +309,7 @@ thin_draws.pdb_reference_posterior_draws <- function(x, thin, ...){
   rpdi <- info(x)
   class(x) <- class(x)[-1]
   x <- posterior::thin_draws(x, thin, ...)
-  x <- pdb_reference_posterior_draws(x, rpdi)
+  x <- as.pdb_reference_posterior_draws(x, rpdi)
   checkmate::assert_class(x, "pdb_reference_posterior_draws")
   x
 }
