@@ -17,17 +17,17 @@ test_that("test that all steps of the contribution pipeline works as expected", 
             added_by = "Stanislaw Ulam")
 
   # Create the data info object
-  expect_silent(di <- pdb_data_info(x))
+  expect_silent(di <- as.pdb_data_info(x))
 
   # Access the data
   file_path <- system.file("test_files/eight_schools.R", package = "posteriordb")
   source(file_path, local = TRUE)
 
   # Create the data object
-  expect_silent(dat <- pdb_data(eight_schools, info = di))
+  expect_silent(dat <- as.pdb_data(eight_schools, info = di))
 
   # remove_pdb(dat, pdbl)
-  expect_silent(write_pdb(dat, pdbl))
+  expect_silent(write_pdb(dat, pdbl, overwrite = TRUE))
 
   ### Add model ----
   x <- list(name = "test_eight_schools_model",
@@ -39,17 +39,17 @@ test_that("test that all steps of the contribution pipeline works as expected", 
             references = NULL,
             added_by = "Stanislaw Ulam",
             added_date = Sys.Date())
-  expect_silent(mi <- pdb_model_info(x))
+  expect_silent(mi <- as.pdb_model_info(x))
 
   # Read in Stan model and compile the model
   file_path <- system.file("test_files/eight_schools_noncentered.stan", package = "posteriordb")
   smc <- readLines(file_path)
   sm <- rstan::stan_model(model_code = smc)
-  expect_silent(mc <- model_code(sm, info = mi))
+  expect_silent(mc <- as.model_code(sm, info = mi))
 
   # Write the model to the database
   # remove_pdb(mc, pdbl)
-  expect_silent(write_pdb(mc, pdbl))
+  expect_silent(write_pdb(mc, pdbl, overwrite = TRUE))
 
   ### Add posterior ----
   x <- list(pdb_model_code = mc,
@@ -61,9 +61,9 @@ test_that("test that all steps of the contribution pipeline works as expected", 
             reference_posterior_name = NULL,
             added_date = Sys.Date(),
             added_by = "Stanislaw Ulam")
-  expect_silent(po <- pdb_posterior(x, pdbl))
+  expect_silent(po <- as.pdb_posterior(x, pdbl))
   # remove_pdb(po, pdbl)
-  expect_silent(write_pdb(po, pdbl))
+  expect_silent(write_pdb(po, pdbl, overwrite = TRUE))
 
 
   ### Setup reference posterior info ----
@@ -88,7 +88,7 @@ test_that("test that all steps of the contribution pipeline works as expected", 
             )
 
   # Create a reference posterior draws info object
-  expect_silent(rpi <- pdb_reference_posterior_draws_info(x))
+  expect_silent(rpi <- as.pdb_reference_posterior_info(x))
 
   expect_output(rp <- compute_reference_posterior_draws(rpi, pdbl))
   expect_silent(rp <- check_reference_posterior_draws(x = rp))
