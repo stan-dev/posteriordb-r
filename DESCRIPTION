@@ -25,6 +25,7 @@ Suggests:
     covr,
     digest,
     dplyr,
+    dotenv,
     httr,
     git2r,
     posterior,
@@ -33,4 +34,6 @@ Suggests:
     rstan,
     testthat,
     tibble,
-    yaml
+    yaml,
+    knitr
+VignetteBuilder: knitr

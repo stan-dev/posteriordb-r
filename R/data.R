@@ -12,6 +12,12 @@ get_data <- function(x, ...) {
 
 #' @rdname get_data
 #' @export
+as.pdb_data <- function(x, ...) {
+  UseMethod("as.pdb_data")
+}
+
+#' @rdname get_data
+#' @export
 get_data.pdb_posterior <- function(x, ...) {
   get_data(x$data_name, pdb = pdb(x), ...)
 }
@@ -37,7 +43,7 @@ get_data.pdb_data_info <- function(x, pdb = pdb_default(), ...){
 
 #' @rdname get_data
 #' @export
-get_data.list <- function(x, info, ...){
+as.pdb_data.list <- function(x, info, ...){
   checkmate::assert_class(info, "pdb_data_info")
   class(x) <- c("pdb_data", "list")
   info(x) <- info

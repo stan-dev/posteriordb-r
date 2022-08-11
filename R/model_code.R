@@ -1,4 +1,4 @@
-#' Extract file paths to model code from posterior object
+#' Extract and construct model code objects
 #'
 #' @param x an object to access file path to.
 #' @param framework model code framework (e.g. \code{stan}).
@@ -12,6 +12,13 @@
 model_code <- function(x, ...) {
   UseMethod("model_code")
 }
+
+#' @rdname model_code
+#' @export
+as.model_code <- function(x, info, ...) {
+  UseMethod("as.model_code")
+}
+
 
 #' @rdname model_code
 #' @export
@@ -41,19 +48,27 @@ model_code.pdb_model_info <- function(x, framework, pdb = pdb_default(), ...) {
 
 #' @rdname model_code
 #' @export
-model_code.stanmodel <- function(x, info, ...){
-  mc <- x@model_code
-  class(mc) <- "pdb_model_code"
-  framework(mc) <- "stan"
-  info(mc) <- info
-  assert_model_code(mc)
-  mc
+as.model_code.stanmodel <- function(x, info, ...){
+  as.model_code(x@model_code, info = info, framework = "stan")
+}
+
+#' @rdname model_code
+#' @export
+as.model_code.character <- function(x, info, framework, ...){
+  class(x) <- "pdb_model_code"
+  framework(x) <- "stan"
+  info(x) <- info
+  assert_model_code(x)
+  x
 }
 
 #' @rdname model_code
 #' @export
 pdb_model_code <- model_code
 
+#' @rdname model_code
+#' @export
+as.pdb_model_code <- as.model_code
 
 
 #' @rdname model_code
@@ -101,6 +116,12 @@ stan_code_file_path <- function(x) {
 #' @export
 stan_code <- function(x, ...) {
   model_code(x, framework = "stan", ...)
+}
+
+#' @rdname model_code
+#' @export
+as.stan_code <- function(x, info, ...) {
+  as.model_code(x, framework = "stan", info = info, ...)
 }
 
 #' @rdname model_code

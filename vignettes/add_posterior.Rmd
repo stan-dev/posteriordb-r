@@ -1,0 +1,157 @@
+---
+title: "Add a Posterior to the Posterior Database"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Add a Posterior to the Posterior Database}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First clone the `posteriordb` repository for a local copy you want to update. Then install the posteriordb R package.
+
+```{r, message=FALSE, eval=FALSE}
+remotes::install_github("stan-dev/posteriordb-r")
+```
+
+As a first step we load the `posteriordb` R package and create a connection to the local posterior database. If you intend to add stan-code, also load rstan.
+
+```{r, message=FALSE, eval=FALSE}
+library(posteriordb)
+library(rstan)
+
+# Set the environment variable PDB_PATH to you local posteriordb repo as
+Sys.setenv(PDB_PATH = "[path to local posteriordb]")
+
+# We setup a connection to the local posteriordb
+pdbl <- pdb_local()
+```
+
+```{r, message=FALSE, eval=TRUE, echo=FALSE}
+library(posteriordb)
+library(rstan)
+
+dotenv::load_dot_env(file = "../.env")
+
+# We setup a connection to the local posteriordb
+pdbl <- pdb_local()
+```
+
+Since a posterior consists of data and a model, we start by adding the data and the model to the database.
+
+## Add Data
+
+The next step is to add and write down information about the data you want to add. Below is a test example using data from the eight schools example.
+
+
+```{r}
+x <- list(name = "test_eight_schools_data",
+          keywords = c("test_data"),
+          title = "A Test Data for the Eight Schools Model",
+          description = "The data contain data from eight schools on SAT scores.",
+          urls = "https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html",
+          references = "rubin1981estimation",
+          added_date = Sys.Date(),
+          added_by = "Stanislaw Ulam")
+
+# Create the data info object
+di <- pdb_data_info(x)
+
+# Setup the data for eight schools
+eight_schools <- list(J = 8L,
+                      y = as.integer(c(28, 8, -3, 7, -1, 1, 18, 12)),
+                      sigma = as.integer(c(15, 10, 16, 11, 9, 11, 10, 18)))
+
+# Create the data object
+dat <- pdb_data(eight_schools, info = di)
+
+dat
+info(dat)
+```
+
+
+We can now add the data object to the database. The function ```write_pdb()``` will zip and write the data.
+
+```{r}
+write_pdb(dat, pdbl)
+```
+
+If we want to remove the data object, we can simply use
+
+```{r, eval=TRUE}
+remove_pdb(dat, pdbl)
+```
+
+Note that we now added a reference `rubin1981estimation` that already exists in the bibliography. If a new reference is added, it also needs to be added in the bibtex bibliography.
+
+
+
+## Add Model
+
+Similarly, we can add stan-files and model information as follows (this is a test case using the eight school model). Note that we compile the model code using Stan. This is not nessecary. It is possible to just add the model code right away, but it is better to check that the code compiles. 
+
+```{r}
+x <- list(name = "test_eight_schools_model",
+          keywords = c("test_model", "hiearchical"),
+          title = "Test Non-Centered Model for Eight Schools",
+          description = "An hiearchical model, non-centered parametrisation.",
+          urls = c("https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html"),
+          framework = "stan",
+          references = NULL,
+          added_by = "Stanislaw Ulam",
+          added_date = Sys.Date())
+mi <- pdb_model_info(x)
+
+# Read in Stan model and compile the model (using rstan)
+smc <- "
+data {
+  int <lower=0> J; // number of schools
+  real y[J]; // estimated treatment
+  real<lower=0> sigma[J]; // std of estimated effect
+}
+parameters {
+  vector[J] theta_trans; // transformation of theta
+  real mu; // hyper-parameter of mean
+  real<lower=0> tau; // hyper-parameter of sd
+}
+transformed parameters{
+  vector[J] theta;
+  // original theta
+  theta=theta_trans*tau+mu;
+}
+model {
+  theta_trans ~ normal (0,1);
+  y ~ normal(theta , sigma);
+  mu ~ normal(0, 5); // a non-informative prior
+  tau ~ cauchy(0, 5);
+}
+"
+sm <- rstan::stan_model(model_code = smc)
+mc <- model_code(sm, info = mi)
+
+# If we want to jus add the raw stan code, we can simply use that instead.
+# Although we need to specify that it is stan code.
+mc <- model_code(smc, info = mi, framework = "stan")
+
+# The model object to include
+mc
+info(mc)
+```
+
+To add the model, we again just use
+```{r, eval=TRUE}
+write_pdb(mc, pdbl)
+```
+
+Similarly we remove the model object with
+```{r, eval=TRUE}
+remove_pdb(mc, pdbl)
+```
+
+
