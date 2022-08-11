@@ -8,7 +8,8 @@
 #'
 #' The connection [pdb_default()] first checks if there exists a [.pdb_config.yml]
 #' file in the working directory. If it exist, [pdb_config()] is used to setup,
-#' the connection, otherwise [pdb_github()] is used.
+#' the connection. If no [.pdb_config.yml] file is found, [pdb_local()] is used to
+#' setup a pdb. If no local pdb is found, [pdb_github()] is used.
 #'
 #'
 #' @param cache_path The path to the pdb cache. Default is R temporary directory.
@@ -111,6 +112,8 @@ supported_pdb_types <- function() c("local", "github")
 pdb_default <- function(cache_path = tempdir()){
   pdbc <- suppressWarnings(try(pdb_config(), silent = TRUE))
   if(inherits(pdbc, "pdb")) return(pdbc)
+  pdbl <- suppressWarnings(try(pdb_local(cache_path = cache_path), silent = TRUE))
+  if(inherits(pdbl, "pdb")) return(pdbl)
   pdb_github("stan-dev/posteriordb/posterior_database@master", cache_path = cache_path)
 }
 

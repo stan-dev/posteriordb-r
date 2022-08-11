@@ -85,5 +85,6 @@ pdb connection.
 
 The connection [pdb_default()] first checks if there exists a [.pdb_config.yml]
 file in the working directory. If it exist, [pdb_config()] is used to setup,
-the connection, otherwise [pdb_github()] is used.
+the connection. If no [.pdb_config.yml] file is found, [pdb_local()] is used to
+setup a pdb. If no local pdb is found, [pdb_github()] is used.
 }
