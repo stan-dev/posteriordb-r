@@ -47,5 +47,11 @@ test_that("pdb_default is github", {
 
   expect_silent(pdb_default_test <- pdb_default())
   expect_silent(pdb_github_test <- pdb_github("stan-dev/posteriordb/posterior_database"))
-  expect_equal(pdb_default_test, pdb_github_test)
+  expect_silent(pdb_local_test <- try(pdb_local()))
+  if(!inherits(pdb_local_test, "try-error")) {
+    expect_equal(pdb_default_test, pdb_local_test)
+  } else {
+    expect_equal(pdb_default_test, pdb_github_test)
+  }
+
 })

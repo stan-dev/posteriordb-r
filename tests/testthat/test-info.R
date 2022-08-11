@@ -44,11 +44,11 @@ test_that("data info constructor ", {
             added_date = Sys.Date(),
             data_file = "data/data/.json",
             added_by = "Phil Clemson")
-  expect_error(di <- pdb_data_info(x))
+  expect_error(di <- as.pdb_data_info(x))
   x$data_file <- NULL
-  expect_silent(di <- pdb_data_info(x))
+  expect_silent(di <- as.pdb_data_info(x))
   x$data_file <- "data/data/wells_data2.json"
-  expect_silent(di <- pdb_data_info(x))
+  expect_silent(di <- as.pdb_data_info(x))
 })
 
 
@@ -63,6 +63,6 @@ test_that("model info constructor ", {
             added_by = "Stanislaw Ulam",
             added_date = Sys.Date())
 
-  expect_silent(mi <- pdb_model_info(x))
+  expect_silent(mi <- as.pdb_model_info(x))
   checkmate::expect_class(mi, "pdb_model_info")
 })
