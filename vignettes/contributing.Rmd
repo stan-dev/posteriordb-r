@@ -1,8 +1,8 @@
 ---
-title: "Add Content to the Posterior Database"
+title: "Add Content to the Posterior Database using R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Add Content to the Posterior Database}
+  %\VignetteIndexEntry{Add Content to the Posterior Database using R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

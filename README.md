@@ -6,21 +6,17 @@
 coverage](https://codecov.io/gh/stan-dev/posteriordb-r/branch/main/graph/badge.svg)](https://codecov.io/gh/stan-dev/posteriordb-r?branch=main)
 <!-- badges: end -->
 
-`posteriordb-r`: an R package to work with `posteriordb`
-========================================================
+# `posteriordb`: an R package to work with `posteriordb`
 
-This repository contain the R package to easily work with the
+This repository contains the R package to efficiently work with the
 [posteriordb](https://github.com/stan-dev/posteriordb) repository. The R
-package included database contain convenience functions to access data,
-model code and information for individual posteriors, models, data and
-draws.
+package includes convenience functions to access data, model code and
+information for individual posteriors, models, data and draws.
 
-Installation
-------------
+## Installation
 
-To install the package To install only the R package and then access the
-posteriors remotely, just install the package from GitHub using the
-`remotes` package.
+To install only the R package and then access the posteriors remotely,
+install the package from GitHub using the `remotes` package.
 
 ``` r
 remotes::install_github("stan-dev/posteriordb-r")
@@ -32,40 +28,40 @@ To load the package, just run.
 library(posteriordb)
 ```
 
-Connect to the posterior database
----------------------------------
+## Connect to the posterior database
 
-First we create the posterior database to use, here we can use the
-database locally (if the `posteriordb` repo is cloned).
+First, we create the posterior database connection to use. Here we want
+to use the database locally. We assume the `posteriordb` repo has been
+cloned and is accessible locally.
 
 ``` r
 my_pdb <- pdb_local()
 ```
 
-The above code requires that your working directory is in the main
-folder of the cloned repository. Otherwise we can use the `path`
-argument.
+The above code requires that your working directory be the cloned
+repository’s main folder. Otherwise, we can use the `path` argument in
+`pdb_local()` to point to the local posterior database. We can also set
+the environment variable `PBD_PATH` to handle the connection. For more
+details, see `?pdb`.
 
-We can also simply use the github repository directly to access the
-data.
+The most straightforward approach is to use the GitHub repository
+directly to access the database.
 
 ``` r
 my_pdb <- pdb_github()
 ```
 
-Independent of the posterior database used, the following works for all.
+When you have a connection to the posterior database of choice, you can
+access the data, models etc., using the same functionality.
 
-Contributing content using R
-----------------------------
+## Contributing content using R
 
-If you want to contribute to a posteriordb, see
-[https://github.com/stan-dev/posteriordb-r/blob/main/docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+If you want to contribute to a posteriordb, see the vignette
+[vignettes/contributing](https://htmlpreview.github.io/?https://github.com/stan-dev/posteriordb-r/blob/main/vignettes/contributing.html).
 
-Access content
---------------
+## Access content
 
-To list the posteriors available in the database, use
-`posterior_names()`.
+To list the posteriors in the database, use `posterior_names()`.
 
 ``` r
 pos <- posterior_names(my_pdb)
@@ -74,7 +70,7 @@ head(pos)
 
     ## [1] "arK-arK"                         "arma-arma11"                    
     ## [3] "bball_drive_event_0-hmm_drive_0" "bball_drive_event_1-hmm_drive_1"
-    ## [5] "butterfly-multi_occupancy"       "diamonds-diamonds"
+    ## [5] "bones_data-bones_model"          "butterfly-multi_occupancy"
 
 In the same fashion, we can list data and models included in the
 database as
@@ -93,10 +89,9 @@ head(dn)
 ```
 
     ## [1] "arK"                 "arma"                "bball_drive_event_0"
-    ## [4] "bball_drive_event_1" "butterfly"           "diamonds"
+    ## [4] "bball_drive_event_1" "bones_data"          "butterfly"
 
-We can also get all information on each individual posterior as a tibble
-with
+We can also get all information on each posterior as a table with
 
 ``` r
 pos <- posteriors_tbl_df(my_pdb)
@@ -104,25 +99,25 @@ head(pos)
 ```
 
     ## # A tibble: 6 × 7
-    ##   name     model_name  reference_posteri… data_name added_by added_date keywords
-    ##   <chr>    <chr>       <chr>              <chr>     <chr>    <date>     <chr>   
-    ## 1 arK-arK  arK         arK-arK            arK       Mans Ma… 2019-11-19 stan_be…
-    ## 2 arma-ar… arma11      arma-arma11        arma      Mans Ma… 2020-01-08 stan_be…
-    ## 3 bball_d… hmm_drive_0 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_ex…
-    ## 4 bball_d… hmm_drive_0 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_be…
-    ## 5 bball_d… hmm_drive_1 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_ex…
-    ## 6 bball_d… hmm_drive_1 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_be…
+    ##   name        model_name reference_poste… data_name added_by added_date keywords
+    ##   <chr>       <chr>      <chr>            <chr>     <chr>    <date>     <chr>   
+    ## 1 arK-arK     arK        arK-arK          arK       Mans Ma… 2019-11-19 stan_be…
+    ## 2 arma-arma11 arma11     arma-arma11      arma      Mans Ma… 2020-01-08 stan_be…
+    ## 3 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_ex…
+    ## 4 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_be…
+    ## 5 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_ex…
+    ## 6 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_be…
 
 The posterior’s name is made up of the data and model fitted to the
 data. Together, these two uniquely define a posterior distribution. To
-access a posterior object we can use the model name.
+access a posterior object, we can use the posterior name.
 
 ``` r
 po <- posterior("eight_schools-eight_schools_centered", my_pdb)
 ```
 
 From the posterior object, we can access data, model code (i.e., Stan
-code in this case) and a lot of other useful information.
+code in this case) and other useful information.
 
 ``` r
 dat <- pdb_data(po)
@@ -169,14 +164,14 @@ dfp <- data_file_path(po)
 dfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpEoOiTD/posteriordb_cache/data/data/eight_schools.json"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//Rtmpwafi9o/posteriordb_cache/data/data/eight_schools.json"
 
 ``` r
 scfp <- stan_code_file_path(po)
 scfp
 ```
 
-    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//RtmpEoOiTD/posteriordb_cache/models/stan/eight_schools_centered.stan"
+    ## [1] "/var/folders/8x/bgssdq5n6dx1_ydrhq1zgrym0000gn/T//Rtmpwafi9o/posteriordb_cache/models/stan/eight_schools_centered.stan"
 
 We can also access information regarding the model and the data used to
 compute the posterior.
@@ -196,8 +191,8 @@ model_info(po)
     ## A centered hiearchical model for 8 schools
     ## Frameworks: 'stan', 'pymc3'
 
-Note that the references are referencing to BibTeX items that can be
-found in `content/references/references.bib`.
+Note that the references reference BibTeX items found in
+`content/references/references.bib`.
 
 We can access most of the posterior information as a `tbl_df` using
 
@@ -207,18 +202,18 @@ head(tbl)
 ```
 
     ## # A tibble: 6 × 7
-    ##   name     model_name  reference_posteri… data_name added_by added_date keywords
-    ##   <chr>    <chr>       <chr>              <chr>     <chr>    <date>     <chr>   
-    ## 1 arK-arK  arK         arK-arK            arK       Mans Ma… 2019-11-19 stan_be…
-    ## 2 arma-ar… arma11      arma-arma11        arma      Mans Ma… 2020-01-08 stan_be…
-    ## 3 bball_d… hmm_drive_0 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_ex…
-    ## 4 bball_d… hmm_drive_0 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_be…
-    ## 5 bball_d… hmm_drive_1 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_ex…
-    ## 6 bball_d… hmm_drive_1 bball_drive_event… bball_dr… Oliver … 2020-05-10 stan_be…
+    ##   name        model_name reference_poste… data_name added_by added_date keywords
+    ##   <chr>       <chr>      <chr>            <chr>     <chr>    <date>     <chr>   
+    ## 1 arK-arK     arK        arK-arK          arK       Mans Ma… 2019-11-19 stan_be…
+    ## 2 arma-arma11 arma11     arma-arma11      arma      Mans Ma… 2020-01-08 stan_be…
+    ## 3 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_ex…
+    ## 4 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_be…
+    ## 5 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_ex…
+    ## 6 bball_driv… hmm_drive… bball_drive_eve… bball_dr… Oliver … 2020-05-10 stan_be…
 
 In addition, we can also access a list of posteriors with
 `filter_posteriors()`. The filtering function follows dplyr filter
-semantics based on the posterior tibble.
+semantics.
 
 ``` r
 pos <- filter_posteriors(pdb = my_pdb, data_name == "eight_schools")
@@ -245,7 +240,7 @@ pos
     ## A non-centered hiearchical model for 8 schools
     ## Frameworks: 'stan'
 
-To access reference posterior draws we use
+To access reference posterior draws, we use
 `reference_posterior_draws()`.
 
 ``` r
@@ -275,9 +270,9 @@ posterior::summarize_draws(rpd)
     ## 10 tau       3.60   2.75  3.20  2.55  0.257  9.73  1.00    9989.    9992.
 
 To access information on the reference posterior we can use
-`reference_posterior_draws_info()` or just use `info()` on the reference
-posterior. This give soime basic information on how the reference
-posterior was computed.
+`reference_posterior_draws_info()` or use `info()` on the reference
+posterior. The posterior reference draws return information on how the
+reference posterior was computed.
 
 ``` r
 rpi <- reference_posterior_draws_info(po)
@@ -307,9 +302,3 @@ info(rpd)
     ##   thin: 10
     ##   seed: 4711
     ##     adapt_delta: 0.95
-
-Contributing content using R
-----------------------------
-
-If you want to contribute to a posteriordb, see
-[https://github.com/stan-dev/posteriordb-r/blob/main/docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
