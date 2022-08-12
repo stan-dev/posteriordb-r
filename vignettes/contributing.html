@@ -354,7 +354,8 @@ those parts.</p>
 <h2>Adding the Data</h2>
 <p>The next step is to add and write down information about the data you
 want to add. Below is a test example using data from the eight schools
-example.</p>
+example. Information on the different parts of the metadata can be found
+in the file <a href="https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md">github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;test_eight_schools_data&quot;</span>,</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">keywords =</span> <span class="fu">c</span>(<span class="st">&quot;test_data&quot;</span>),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">&quot;A Test Data for the Eight Schools Model&quot;</span>,</span>
@@ -388,8 +389,11 @@ example.</p>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Data: test_eight_schools_data</span></span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A Test Data for the Eight Schools Model</span></span></code></pre></div>
 <p>We can now add the data object to the database. The function
-<code>write_pdb()</code> will zip and write the data.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_pdb</span>(dat, pdbl)</span></code></pre></div>
+<code>write_pdb()</code> will zip and write the data. By setting
+<code>overwrite = TRUE</code>, the function will overwrite the data if
+it already exists. If <code>overwrite = FALSE</code>, the function would
+throw an error if the file already exists.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_pdb</span>(dat, pdbl, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>If we want to remove the data object, we can use</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">remove_pdb</span>(dat, pdbl)</span></code></pre></div>
 <p>Note that we now added a reference <code>rubin1981estimation</code>
@@ -402,6 +406,8 @@ also needs to be added to the BibTeX bibliography.</p>
 (this is a test case using the eight school model). Note that we compile
 the model code using Stan. Compiling is not necessary to add code but
 simplify.</p>
+<p>Just as with the data, information on the different parts of the
+metadata can be found in <a href="https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md">github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">name =</span> <span class="st">&quot;test_eight_schools_model&quot;</span>,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">keywords =</span> <span class="fu">c</span>(<span class="st">&quot;test_model&quot;</span>, <span class="st">&quot;hierarchical&quot;</span>),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">&quot;Test Non-Centered Model for Eight Schools&quot;</span>,</span>
@@ -483,6 +489,8 @@ stan object.</p>
 <p>When we have added the data and the model, we can add a posterior
 object connecting the model and the data. We must add the model code and
 data before adding the posterior.</p>
+<p>Again, information on the different parts of the metadata can be
+found in <a href="https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md">github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md</a>.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">pdb_model_code =</span> mc,</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">pdb_data =</span> dat,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">keywords =</span> <span class="st">&quot;posterior_keywords&quot;</span>,</span>
@@ -520,8 +528,9 @@ Request with the proposed posterior.</p>
 <div id="add-posterior-reference-draws" class="section level2">
 <h2>Add Posterior Reference Draws</h2>
 <p>If possible, we would like to supply posterior reference draws, i.e.,
-draws of excellent quality from the posterior. The <a href="https://github.com/MansMeg/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md">doc/REFERENCE_POSTERIOR_DEFINITION.md</a>
-contain details on quality criteria for reference posteriors.</p>
+draws of excellent quality from the posterior. The <a href="https://github.com/MansMeg/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md">github.com/stan-dev/posteriordb/doc/REFERENCE_POSTERIOR_DEFINITION.md</a>
+contain details on quality criteria for reference posteriors.
+Information on the different parts of the metadata can be found in <a href="https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md">github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md</a>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pdbl <span class="ot">&lt;-</span> <span class="fu">pdb_local</span>()</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>po <span class="ot">&lt;-</span> <span class="fu">posterior</span>(<span class="st">&quot;test_eight_schools_data-test_eight_schools_model&quot;</span>, pdbl)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
