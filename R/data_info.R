@@ -6,6 +6,12 @@ data_info <- function(x, ...) {
 
 #' @rdname model_info
 #' @export
+as.data_info <- function(x, ...) {
+  UseMethod("as.data_info")
+}
+
+#' @rdname model_info
+#' @export
 data_info.pdb_posterior <- function(x, ...) {
   x$data_info
 }
@@ -19,7 +25,7 @@ data_info.character <- function(x, pdb = pdb_default(), ...) {
 
 #' @rdname model_info
 #' @export
-data_info.list <- function(x, pdb = NULL, ...) {
+as.data_info.list <- function(x, pdb = NULL, ...) {
   class(x) <- "pdb_data_info"
   checkmate::assert_string(x$name)
   if(is.null(x$data_file)) x$data_file <- paste0("data/data/", x$name, ".json")
@@ -31,6 +37,9 @@ data_info.list <- function(x, pdb = NULL, ...) {
 #' @export
 pdb_data_info <- data_info
 
+#' @rdname model_info
+#' @export
+as.pdb_data_info <- as.data_info
 
 
 # read data info from the data base

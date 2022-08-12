@@ -2,18 +2,24 @@
 % Please edit documentation in R/posterior.R
 \name{posterior}
 \alias{posterior}
+\alias{as.posterior}
 \alias{posterior.character}
-\alias{posterior.list}
+\alias{as.posterior.list}
 \alias{pdb_posterior}
+\alias{as.pdb_posterior}
 \title{Access a posterior in the posterior database}
 \usage{
 posterior(x, pdb = pdb_default(), ...)
 
+as.posterior(x, pdb = pdb_default(), ...)
+
 \method{posterior}{character}(x, pdb = pdb_default(), ...)
 
-\method{posterior}{list}(x, pdb = pdb_default(), ...)
+\method{as.posterior}{list}(x, pdb = pdb_default(), ...)
 
 pdb_posterior(x, pdb = pdb_default(), ...)
+
+as.pdb_posterior(x, pdb = pdb_default(), ...)
 }
 \arguments{
 \item{x}{a posterior name that exist in the posterior database or a

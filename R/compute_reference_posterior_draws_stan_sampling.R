@@ -37,7 +37,7 @@ compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
   rpi$diagnostics <- compute_stan_sampling_diagnostics(x = stan_object, keep_dimensions = pdn)
 
   # Create rpd object
-  rpd <- reference_posterior_draws(x = stan_object, info = rpi, pdb = pdb)
+  rpd <- as.reference_posterior_draws(x = stan_object, info = rpi, pdb = pdb)
 
   # Subset to relevant parameters (that are used)
   rpd <- subset(rpd, variable = pdn)
@@ -50,10 +50,10 @@ compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
 
 #' @rdname reference_posterior_draws
 #' @export
-reference_posterior_draws.stanfit <- function(x, info, pdb = pdb_default(), ...){
+as.reference_posterior_draws.stanfit <- function(x, info, pdb = pdb_default(), ...){
   checkmate::assert_class(info, "pdb_reference_posterior_info")
   draws <- posterior::as_draws_list(posterior::as_draws(x))
-  reference_posterior_draws(draws, info = info, pdb = pdb)
+  as.reference_posterior_draws(draws, info = info, pdb = pdb)
 }
 
 

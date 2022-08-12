@@ -1,0 +1,273 @@
+---
+title: "Add Content to the Posterior Database"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Add Content to the Posterior Database}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First, clone the `posteriordb` repository for a local copy you want to update. Then install the posteriordb R package.
+
+```{r, message=FALSE, eval=FALSE}
+remotes::install_github("stan-dev/posteriordb-r")
+```
+
+As a first step, we load the `posteriordb` R package and create a connection to the local posterior database. If you intend to add stan-code, also load `rstan`.
+
+```{r, message=FALSE, eval=FALSE}
+library(posteriordb)
+library(rstan)
+
+# Set the environment variable PDB_PATH to your local posteriordb repo as
+Sys.setenv(PDB_PATH = "[path to local posteriordb]")
+
+# We setup a connection to the local posteriordb
+pdbl <- pdb_local()
+
+```
+
+```{r, message=FALSE, eval=TRUE, echo=FALSE}
+library(posteriordb)
+library(rstan)
+
+# To run locally, set PDB_PATH in the dotenv file
+try(dotenv::load_dot_env(file = "../.env"))
+
+# We setup a connection to the local posteriordb
+pdbl <- pdb_local()
+```
+
+Since a posterior consist of data and a model, we start by adding those parts.
+
+## Adding the Data
+
+The next step is to add and write down information about the data you want to add. Below is a test example using data from the eight schools example. Information on the different parts of the metadata can be found in the file [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+
+```{r}
+x <- list(name = "test_eight_schools_data",
+          keywords = c("test_data"),
+          title = "A Test Data for the Eight Schools Model",
+          description = "The data contain data from eight schools on SAT scores.",
+          urls = "https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html",
+          references = "rubin1981estimation",
+          added_date = Sys.Date(),
+          added_by = "Stanislaw Ulam")
+
+# Create the data info object
+di <- as.pdb_data_info(x)
+
+# Setup the data for eight schools
+eight_schools <- list(J = 8L,
+                      y = as.integer(c(28, 8, -3, 7, -1, 1, 18, 12)),
+                      sigma = as.integer(c(15, 10, 16, 11, 9, 11, 10, 18)))
+
+# Create the data object
+dat <- as.pdb_data(eight_schools, info = di)
+
+dat
+info(dat)
+```
+
+
+We can now add the data object to the database. The function ```write_pdb()``` will zip and write the data. By setting `overwrite = TRUE`, the function will overwrite the data if it already exists. If `overwrite = FALSE`, the function would throw an error if the file already exists.
+
+```{r, }
+write_pdb(dat, pdbl, overwrite = TRUE)
+```
+
+If we want to remove the data object, we can use
+```{r, eval=FALSE}
+remove_pdb(dat, pdbl)
+```
+
+Note that we now added a reference `rubin1981estimation` that already exists in the bibliography. If a new reference is added, it also needs to be added to the BibTeX bibliography.
+
+
+
+## Adding the Model
+
+Similarly, we can add stan-files and model information as follows (this is a test case using the eight school model). Note that we compile the model code using Stan. Compiling is not necessary to add code but simplify. 
+
+Just as with the data, information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+
+```{r}
+x <- list(name = "test_eight_schools_model",
+          keywords = c("test_model", "hierarchical"),
+          title = "Test Non-Centered Model for Eight Schools",
+          description = "An hierarchical model, non-centered parametrisation.",
+          urls = c("https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html"),
+          framework = "stan",
+          references = NULL,
+          added_by = "Stanislaw Ulam",
+          added_date = Sys.Date())
+mi <- as.pdb_model_info(x)
+
+# Read in Stan model and compile the model (using rstan)
+smc <- "
+data {
+  int <lower=0> J; // number of schools
+  real y[J]; // estimated treatment
+  real<lower=0> sigma[J]; // std of estimated effect
+}
+parameters {
+  vector[J] theta_trans; // transformation of theta
+  real mu; // hyper-parameter of mean
+  real<lower=0> tau; // hyper-parameter of sd
+}
+transformed parameters{
+  vector[J] theta;
+  // original theta
+  theta=theta_trans*tau+mu;
+}
+model {
+  theta_trans ~ normal (0,1);
+  y ~ normal(theta , sigma);
+  mu ~ normal(0, 5); // a non-informative prior
+  tau ~ cauchy(0, 5);
+}
+"
+mc <- as.model_code(smc, info = mi, framework = "stan")
+
+# The model object to include
+mc
+info(mc)
+```
+
+Ideally, check that the stan code compiles before it is added to the posterior database. A simple way is to compile the model with `rstan` and directly create the model code object from the stan object.
+
+```{r, eval=FALSE}
+sm <- rstan::stan_model(model_code = smc)
+mc <- as.model_code(sm, info = mi)
+```
+
+To add the model to the local posterior database, we again use:
+```{r, eval=FALSE}
+write_pdb(mc, pdbl)
+```
+
+```{r, echo=FALSE}
+write_pdb(mc, pdbl, overwrite = TRUE)
+```
+
+And to remove the model object, we use
+```{r, eval=FALSE}
+remove_pdb(mc, pdbl)
+```
+
+
+## Adding the Posterior
+
+When we have added the data and the model, we can add a posterior object connecting the model and the data. We must add the model code and data before adding the posterior.
+
+Again, information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+
+
+```{r}
+x <- list(pdb_model_code = mc,
+          pdb_data = dat,
+          keywords = "posterior_keywords",
+          urls = "posterior_urls",
+          references = "rubin1981estimation",
+          dimensions = list("dimensions" = 2, "dim" = 3),
+          reference_posterior_name = NULL,
+          added_date = Sys.Date(),
+          added_by = "Stanislaw Ulam")
+po <- as.pdb_posterior(x)
+```
+
+As with the data and model object, we then use `write_pdb()` and `remove_pdb()` to add and remove the object from the local posterior database.
+
+```{r, eval = FALSE}
+write_pdb(po, pdbl)
+```
+```{r, echo=FALSE}
+write_pdb(po, pdbl, overwrite = TRUE)
+```
+```{r, eval=FALSE}
+remove_pdb(mc, pdbl)
+```
+
+
+## Checking the final posterior, data and model
+
+Finally, we want to check that everything is in order with the posterior. We do this as follows. Here we skip checking that the code compiles.
+
+```{r, eval=TRUE}
+check_pdb_posterior(po, run_stan_code_checks = FALSE)
+```
+
+If the posterior, model, and data pass all checks, we can add it to the posteriordb. Commit the new files in the database and open a Pull Request with the proposed posterior.
+
+## Add Posterior Reference Draws
+
+If possible, we would like to supply posterior reference draws, i.e., draws of excellent quality from the posterior. The [github.com/stan-dev/posteriordb/doc/REFERENCE_POSTERIOR_DEFINITION.md](https://github.com/MansMeg/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md) contain details on quality criteria for reference posteriors.
+Information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+
+```{r}
+pdbl <- pdb_local()
+po <- posterior("test_eight_schools_data-test_eight_schools_model", pdbl)
+
+# Setup reference posterior info ----
+x <- list(name = posterior_name(po),
+          inference = list(method = "stan_sampling",
+                           method_arguments = list(chains = 10,
+                                                   iter = 20000,
+                                                   warmup = 10000,
+                                                   thin = 10,
+                                                   seed = 4711,
+                                                   control = list(adapt_delta = 0.92))),
+          diagnostics = NULL,
+          checks_made = NULL,
+          comments = "This is a test reference posterior",
+          added_by = "Stanislaw Ulam",
+          added_date = Sys.Date(),
+          versions = NULL)
+
+# Create a reference posterior draws info object
+rpi <- as.pdb_reference_posterior_info(x)
+```
+
+The reference posterior draws info contains all information to compute the posterior using rstan. We then check that the reference posterior criteria are fulfilled and add checked diagnostics to the object.
+
+```{r, eval=FALSE}
+# Compute the reference posterior
+rp <- compute_reference_posterior_draws(rpi, pdbl)
+# Check that the draws are of sufficient quality to use as a reference posterior
+rp <- check_reference_posterior_draws(x = rp)
+```
+
+We can now write the reference posterior draws to the posteriordb, just as the other objects.
+
+```{r, eval = FALSE}
+write_pdb(rp, pdbl, overwrite = TRUE)
+```
+
+We can again check the posterior, and its reference draws as follows.
+
+```{r, eval = FALSE}
+check_pdb_posterior(po, pdbl)
+```
+
+We can also remove the reference posterior object with
+```{r, eval=FALSE}
+remove_pdb(rp, pdbl)
+```
+
+```{r cleanup, eval=TRUE, echo=FALSE}
+# Cleanup
+# mc <- pdb_model_code("test_eight_schools_model", pdbl)
+invisible(remove_pdb(mc, pdbl))
+# dat <- pdb_data("test_eight_schools_data", pdbl)
+invisible(remove_pdb(dat, pdbl))
+# po <- pdb_posterior("test_eight_schools_data-test_eight_schools_model", pdbl)
+invisible(remove_pdb(po, pdbl))
+```
+

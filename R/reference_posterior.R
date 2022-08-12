@@ -18,7 +18,18 @@ reference_posterior_info <- function(x, type, pdb = pdb_default(), ...) {
 
 #' @rdname reference_posterior_info
 #' @export
+as.reference_posterior_info <- function(x, type, pdb = pdb_default(), ...) {
+  UseMethod("as.reference_posterior_info")
+}
+
+#' @rdname reference_posterior_info
+#' @export
 pdb_reference_posterior_info <- reference_posterior_info
+
+#' @rdname reference_posterior_info
+#' @export
+as.pdb_reference_posterior_info <- as.reference_posterior_info
+
 
 #' @rdname reference_posterior_info
 #' @export
@@ -45,7 +56,7 @@ reference_posterior_info.character <- function(x, type, pdb = pdb_default(), ...
 
 #' @rdname reference_posterior_info
 #' @export
-reference_posterior_info.list <- function(x, type = NULL, pdb = NULL, ...) {
+as.reference_posterior_info.list <- function(x, type = NULL, pdb = NULL, ...) {
   class(x) <- "pdb_reference_posterior_info"
   assert_reference_posterior_info(x)
   x
@@ -138,7 +149,17 @@ reference_posterior_draws <- function(x, ...){
 
 #' @rdname reference_posterior_draws
 #' @export
+as.reference_posterior_draws <- function(x, ...){
+  UseMethod("as.reference_posterior_draws")
+}
+
+#' @rdname reference_posterior_draws
+#' @export
 pdb_reference_posterior_draws <- reference_posterior_draws
+
+#' @rdname reference_posterior_draws
+#' @export
+as.pdb_reference_posterior_draws <- as.reference_posterior_draws
 
 #' @rdname reference_posterior_draws
 #' @export
@@ -160,7 +181,7 @@ reference_posterior_draws.pdb_reference_posterior_info <- function(x, pdb = pdb_
 
 #' @rdname reference_posterior_draws
 #' @export
-reference_posterior_draws.draws_list <- function(x, info, ...){
+as.reference_posterior_draws.draws_list <- function(x, info, ...){
   checkmate::assert_class(info, "pdb_reference_posterior_info")
   x <- posterior::as_draws_list(posterior::as_draws(x))
   names(x) <- NULL
@@ -288,7 +309,7 @@ thin_draws.pdb_reference_posterior_draws <- function(x, thin, ...){
   rpdi <- info(x)
   class(x) <- class(x)[-1]
   x <- posterior::thin_draws(x, thin, ...)
-  x <- pdb_reference_posterior_draws(x, rpdi)
+  x <- as.pdb_reference_posterior_draws(x, rpdi)
   checkmate::assert_class(x, "pdb_reference_posterior_draws")
   x
 }

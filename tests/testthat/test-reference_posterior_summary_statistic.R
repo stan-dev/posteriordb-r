@@ -26,7 +26,7 @@ test_that("Check that reference_posterior_summary_statistics work as expected", 
 
 
 test_that("compute and write summary_statistics", {
-  if(on_github_actions()) skip_on_os("windows")
+  if(posteriordb:::on_github_actions()) skip_on_os("windows")
 
   expect_silent(pdb_test <- pdb_local())
   posteriordb:::pdb_cache_clear(pdb_test)

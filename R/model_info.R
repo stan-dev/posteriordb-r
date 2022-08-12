@@ -11,7 +11,17 @@ model_info <- function(x, ...) {
 
 #' @rdname model_info
 #' @export
+as.model_info <- function(x, ...) {
+  UseMethod("as.model_info")
+}
+
+#' @rdname model_info
+#' @export
 pdb_model_info <- model_info
+
+#' @rdname model_info
+#' @export
+as.pdb_model_info <- as.model_info
 
 #' @rdname model_info
 #' @export
@@ -28,7 +38,7 @@ model_info.character <- function(x, pdb = pdb_default(), ...) {
 
 #' @rdname model_info
 #' @export
-model_info.list <- function(x, pdb = NULL, ...) {
+as.model_info.list <- function(x, pdb = NULL, ...) {
   class(x) <- "pdb_model_info"
   if(!is.null(x$framework)){
     checkmate::assert_null(x$model_implementations)

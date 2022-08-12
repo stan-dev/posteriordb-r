@@ -2,21 +2,27 @@
 % Please edit documentation in R/model_code.R
 \name{model_code}
 \alias{model_code}
+\alias{as.model_code}
 \alias{model_code.pdb_posterior}
 \alias{model_code.character}
 \alias{model_code.pdb_model_info}
-\alias{model_code.stanmodel}
+\alias{as.model_code.stanmodel}
+\alias{as.model_code.character}
 \alias{pdb_model_code}
+\alias{as.pdb_model_code}
 \alias{model_code_file_path}
 \alias{model_code_file_path.pdb_posterior}
 \alias{model_code_file_path.pdb_model_info}
 \alias{model_code_file_path.character}
 \alias{stan_code_file_path}
 \alias{stan_code}
+\alias{as.stan_code}
 \alias{pdb_stan_code}
-\title{Extract file paths to model code from posterior object}
+\title{Extract and construct model code objects}
 \usage{
 model_code(x, ...)
+
+as.model_code(x, info, ...)
 
 \method{model_code}{pdb_posterior}(x, framework, ...)
 
@@ -24,9 +30,13 @@ model_code(x, ...)
 
 \method{model_code}{pdb_model_info}(x, framework, pdb = pdb_default(), ...)
 
-\method{model_code}{stanmodel}(x, info, ...)
+\method{as.model_code}{stanmodel}(x, info, ...)
+
+\method{as.model_code}{character}(x, info, framework, ...)
 
 pdb_model_code(x, ...)
+
+as.pdb_model_code(x, info, ...)
 
 model_code_file_path(x, ...)
 
@@ -40,6 +50,8 @@ stan_code_file_path(x)
 
 stan_code(x, ...)
 
+as.stan_code(x, info, ...)
+
 pdb_stan_code(x, ...)
 }
 \arguments{
@@ -47,14 +59,14 @@ pdb_stan_code(x, ...)
 
 \item{...}{further arguments supplied to methods.}
 
+\item{info}{a \code{pdb_model_info} object.}
+
 \item{framework}{model code framework (e.g. \code{stan}).}
 
 \item{pdb}{a \code{pdb} object.}
-
-\item{info}{a \code{pdb_model_info} object.}
 }
 \description{
-Extract file paths to model code from posterior object
+Extract and construct model code objects
 }
 \seealso{
 framework()

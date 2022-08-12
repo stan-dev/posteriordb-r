@@ -17,6 +17,12 @@ posterior <- function(x, pdb = pdb_default(), ...) {
 
 #' @rdname posterior
 #' @export
+as.posterior <- function(x, pdb = pdb_default(), ...) {
+  UseMethod("as.posterior")
+}
+
+#' @rdname posterior
+#' @export
 posterior.character <- function(x, pdb = pdb_default(), ...) {
   checkmate::assert_string(x)
   checkmate::assert_class(pdb, "pdb")
@@ -32,7 +38,7 @@ posterior.character <- function(x, pdb = pdb_default(), ...) {
 
 #' @rdname posterior
 #' @export
-posterior.list <- function(x, pdb = pdb_default(), ...) {
+as.posterior.list <- function(x, pdb = pdb_default(), ...) {
   if(!is.null(x$pdb_model_code) & !is.null(x$pdb_data)){
     # We setup the posterior object from a data and model object
     mci <- info(x$pdb_model_code)
@@ -70,6 +76,10 @@ posterior.list <- function(x, pdb = pdb_default(), ...) {
 #' @rdname posterior
 #' @export
 pdb_posterior <- posterior
+
+#' @rdname posterior
+#' @export
+as.pdb_posterior <- as.posterior
 
 #' @export
 print.pdb_posterior <- function(x, ...) {
