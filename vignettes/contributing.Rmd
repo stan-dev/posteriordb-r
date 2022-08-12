@@ -1,8 +1,8 @@
 ---
-title: "Add a Posterior to the Posterior Database"
+title: "Add Content to the Posterior Database"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Add a Posterior to the Posterior Database}
+  %\VignetteIndexEntry{Add Content to the Posterior Database}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -38,7 +38,8 @@ pdbl <- pdb_local()
 library(posteriordb)
 library(rstan)
 
-dotenv::load_dot_env(file = "../.env")
+# To run locally, set PDB_PATH in the dotenv file
+try(dotenv::load_dot_env(file = "../.env"))
 
 # We setup a connection to the local posteriordb
 pdbl <- pdb_local()
