@@ -2,7 +2,7 @@ context("test-check_posterior")
 
 
 test_that("test checking a posterior", {
-
+  assert_pdb_path_exists()
   expect_silent(pdb <- pdb_test <- pdb_local())
 
   expect_silent(po <- posterior("eight_schools", pdb_test))
