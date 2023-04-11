@@ -159,9 +159,13 @@ pdb_version <- function(pdb, ...){
 #' @rdname pdb_version
 #' @export
 pdb_version.pdb_local <- function(pdb, ...){
-  repo <- git2r::repository(pdb$pdb_local_endpoint)
-  r <- git2r::revparse_single(repo, "HEAD")
-  list("sha" = git2r::sha(r))
+  repo <- try(git2r::repository(pdb$pdb_local_endpoint), silent = TRUE)
+  if(inherits(repo, "try-error")){
+    return(list("sha" = "[package 'git2r' not installed, install it to get the git hash]"))
+  } else {
+    r <- git2r::revparse_single(repo, "HEAD")
+    return(list("sha" = git2r::sha(r)))
+  }
 }
 
 #' Get all existing posterior names from a posterior database or posterior objects.

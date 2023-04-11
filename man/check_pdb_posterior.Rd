@@ -17,5 +17,5 @@ check_pdb_posterior(po, run_stan_code_checks = TRUE, verbose = TRUE)
 Test a posterior
 }
 \details{
-The function checks a posterior is consistent.
+The function checks that a posterior is consistent.
 }
