@@ -23,7 +23,9 @@ test_that("pdb_version", {
 
 
 test_that("pdb_local", {
+  assert_pdb_path_exists()
   if(on_github_actions()) skip_on_os("windows")
+
   pdb_path <- Sys.getenv("PDB_PATH")
   expect_silent(pdbl1 <- pdb_local(pdb_path))
 

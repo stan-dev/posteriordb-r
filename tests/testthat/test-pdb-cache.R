@@ -1,7 +1,7 @@
 context("test-pdb-cache")
 
 test_that("remove reference posterior cache", {
-
+  assert_pdb_path_exists()
   expect_silent(pdb_test <- pdb_local())
   posteriordb:::pdb_clear_cache(pdb_test)
 
@@ -21,7 +21,7 @@ test_that("remove reference posterior cache", {
 
 
 test_that("remove data cache", {
-
+  assert_pdb_path_exists()
   expect_silent(pdb_test <- pdb_local())
   pdb_clear_cache(pdb_test)
 

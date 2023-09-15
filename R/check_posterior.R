@@ -1,7 +1,7 @@
 #' Test a posterior
 #'
 #' @details
-#' The function checks a posterior is consistent.
+#' The function checks that a posterior is consistent.
 #'
 #' @param po a [pdb_posterior] to check.
 #' @param run_stan_code_checks should checks using Stan be run?

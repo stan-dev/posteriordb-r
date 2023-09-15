@@ -1,6 +1,7 @@
 context("test-alias")
 
 test_that("alias_names works as expected", {
+  assert_pdb_path_exists()
 
   expect_silent(pdb_test <- pdb_local())
   expect_silent(po1 <- posterior(x = "8schools", pdb_test))
