@@ -7,5 +7,3 @@ README.md
 ^\.github$
 posteriordb*
 ^codecov\.yml$
-docs/*
-doc/*
