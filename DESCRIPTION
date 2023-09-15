@@ -33,6 +33,7 @@ Suggests:
     remotes,
     rmarkdown,
     rstan,
+    RcppEigen,
     testthat,
     tibble,
     yaml,
