@@ -60,7 +60,8 @@ test_that("compute and write summary_statistics", {
 
 
   expect_silent(rpt <- pdb_reference_posterior_summary_statistics(x = "test_data-test_model", pdb = pdb_test))
-  expect_equal(rpt$mean, rpm, tolerance = 0.000000000000001)
+  expect_equal(rpt$mean$mean, rpm$mean, tolerance = 0.000000000000001)
+  expect_equal(rpt$mean$mcse_mean, rpm$mcse_mean, tolerance = 0.000000000000001)
   expect_identical(info(rpm), info(rpt$mean))
   expect_identical(rpm$names, rpt$mean$names)
 
