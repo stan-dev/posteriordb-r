@@ -135,7 +135,7 @@ posterior. We do this as follows:
 
     ## - Stan can be run for the posterior.
 
-    ## 
+    ##
     ## Posterior is ok.
 
 If the posterior passes all checks, it can be added to the posteriordb,
@@ -146,7 +146,7 @@ Add Posterior Reference Draws
 
 If possible, we would like to supply posterior reference draws, i.e.,
 draws of excellent quality from the posterior. The
-[REFERENCE\_POSTERIOR\_DEFINITION.md](https://github.com/MansMeg/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md)
+[REFERENCE\_POSTERIOR\_DEFINITION.md](https://github.com/stan-dev/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md)
 contain details on quality criteria for reference posteriors.
 
     pdbl <- pdb_local()

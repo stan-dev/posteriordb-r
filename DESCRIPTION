@@ -1,6 +1,6 @@
 Package: posteriordb
 Type: Package
-Title: R functionality for posteriordb
+Title: R Functionality for PosteriorDB
 Version: 0.3.2
 Date: 2023-09-15
 Authors@R: c(person("Mans", "Magnusson", email = "mans.magnusson@gmail.com",
@@ -12,7 +12,7 @@ Authors@R: c(person("Mans", "Magnusson", email = "mans.magnusson@gmail.com",
 Maintainer: Mans Magnusson <mans.magnusson@gmail.com>
 Description: R functionality of easy handling of the posteriordb posteriors.
 License: BSD_3_clause + file LICENSE
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Encoding: UTF-8
 Depends:
   R (>= 3.5.0)

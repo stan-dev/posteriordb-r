@@ -8,8 +8,6 @@ ess_bounds(x)
 }
 \arguments{
 \item{x}{a [pdb_reference_posterior_draws] object.}
-
-\item{p}{the joint probability for independent ESS estimators.}
 }
 \description{
 Compute ESS tail and bulk bounds

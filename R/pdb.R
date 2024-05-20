@@ -190,11 +190,13 @@ pn <- function(x, ...) {
   UseMethod("pn")
 }
 
+#' @export
 pn.pdb_local <- function(x, ...) {
   pns <- dir(pdb_file_path(x, "posteriors"))
   remove_file_extension(pns)
 }
 
+#' @export
 pn.pdb_model_code <- function(x, ...) {
   all_pn <- pn(pdb(x))
   mn <- info(x)$name
@@ -202,6 +204,7 @@ pn.pdb_model_code <- function(x, ...) {
   all_pn[all_mn == mn]
 }
 
+#' @export
 pn.pdb_data <- function(x, ...) {
   all_pn <- pn(pdb(x))
   dn <- info(x)$name
@@ -209,10 +212,12 @@ pn.pdb_data <- function(x, ...) {
   all_pn[all_dn == dn]
 }
 
+#' @export
 pn.pdb_model_info <- function(x, ...) {
   all_names <- pn(pdb(x))
 }
 
+#' @export
 pn.list <- function(x, ...) {
   res <- list()
   for(i in seq_along(x)){
@@ -221,6 +226,7 @@ pn.list <- function(x, ...) {
   res
 }
 
+#' @export
 pn.pdb_posterior <- function(x, ...){
   x$name
 }
@@ -229,6 +235,7 @@ pdb_file_path <- function(pdb, ...){
   UseMethod("pdb_file_path")
 }
 
+#' @export
 pdb_file_path.pdb_local <- function(pdb, ...){
   file.path(pdb$pdb_local_endpoint, ...)
 }
