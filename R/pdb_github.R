@@ -60,7 +60,7 @@ pdb_version.pdb_github <- function(pdb, ...){
 
 #' @export
 pn.pdb_github <- function(x, ...) {
-  pns <- github_dir(gh_path = github_path(pdb, type = "contents", path = "posteriors"), pdb = pdb)
+  pns <- github_dir(gh_path = github_path(x, type = "contents", path = "posteriors"), pdb = x)
   remove_file_extension(pns)
 }
 
