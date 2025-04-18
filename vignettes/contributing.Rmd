@@ -38,9 +38,10 @@ pdbl <- pdb_local()
 library(posteriordb)
 library(rstan)
 
-# To run locally, set PDB_PATH in the dotenv file
-try(dotenv::load_dot_env(file = "../.env"))
-
+tmp <- tempdir(check = TRUE)
+git2r::clone("https://github.com/stan-dev/posteriordb",
+             local_path = file.path(tmp, "posteriordb"))
+Sys.setenv(PDB_PATH = file.path(tmp, "posteriordb"))
 # We setup a connection to the local posteriordb
 pdbl <- pdb_local()
 ```
@@ -49,7 +50,7 @@ Since a posterior consist of data and a model, we start by adding those parts.
 
 ## Adding the Data
 
-The next step is to add and write down information about the data you want to add. Below is a test example using data from the eight schools example. Information on the different parts of the metadata can be found in the file [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+The next step is to add and write down information about the data you want to add. Below is a test example using data from the eight schools example. Information on the different parts of the metadata can be found in the file [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md).
 
 ```{r}
 x <- list(name = "test_eight_schools_data",
@@ -94,9 +95,9 @@ Note that we now added a reference `rubin1981estimation` that already exists in 
 
 ## Adding the Model
 
-Similarly, we can add stan-files and model information as follows (this is a test case using the eight school model). Note that we compile the model code using Stan. Compiling is not necessary to add code but simplify. 
+Similarly, we can add stan-files and model information as follows (this is a test case using the eight school model). Note that we compile the model code using Stan. Compiling is not necessary to add code but simplify.
 
-Just as with the data, information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+Just as with the data, information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md).
 
 ```{r}
 x <- list(name = "test_eight_schools_model",
@@ -167,7 +168,7 @@ remove_pdb(mc, pdbl)
 
 When we have added the data and the model, we can add a posterior object connecting the model and the data. We must add the model code and data before adding the posterior.
 
-Again, information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+Again, information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md).
 
 
 ```{r}
@@ -208,8 +209,8 @@ If the posterior, model, and data pass all checks, we can add it to the posterio
 
 ## Add Posterior Reference Draws
 
-If possible, we would like to supply posterior reference draws, i.e., draws of excellent quality from the posterior. The [github.com/stan-dev/posteriordb/doc/REFERENCE_POSTERIOR_DEFINITION.md](https://github.com/MansMeg/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md) contain details on quality criteria for reference posteriors.
-Information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md). 
+If possible, we would like to supply posterior reference draws, i.e., draws of excellent quality from the posterior. The [github.com/stan-dev/posteriordb/doc/REFERENCE_POSTERIOR_DEFINITION.md](https://github.com/stan-dev/posteriordb/blob/master/doc/REFERENCE_POSTERIOR_DEFINITION.md) contain details on quality criteria for reference posteriors.
+Information on the different parts of the metadata can be found in [github.com/stan-dev/posteriordb/doc/DATABASE_CONTENT.md](https://github.com/stan-dev/posteriordb/blob/master/doc/DATABASE_CONTENT.md).
 
 ```{r}
 pdbl <- pdb_local()
