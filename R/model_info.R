@@ -71,7 +71,7 @@ print.pdb_model_info <- function(x, ...) {
 
 assert_model_info <- function(x){
   checkmate::assert_names(names(x),
-                          subset.of = c("name", "model_implementations", "title", "prior", "added_by", "added_date", "references", "description", "urls", "keywords"),
+                          subset.of = c("name", "model_implementations", "title", "prior", "added_by", "added_date", "references", "description", "urls", "keywords", "licence"),
                           must.include = c("name", "model_implementations", "title", "added_by", "added_date"))
   checkmate::assert_string(x$name)
   checkmate::assert_names(names(x$model_implementations), subset.of = supported_frameworks())

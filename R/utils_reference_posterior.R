@@ -149,7 +149,6 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
 #' simulated ESS computations.
 #'
 #' @param x a [pdb_reference_posterior_draws] object.
-#' @param p the joint probability for independent ESS estimators.
 #' @keywords internal
 ess_bounds <- function(x){
   checkmate::assert_class(x, "draws")
