@@ -13,7 +13,7 @@ test_that("Check that reference_posterior_summary_statistics work as expected", 
 
   expect_silent(rpm1 <- reference_posterior_summary_statistic(x = po, type = "mean_value"))
   expect_silent(rpm2 <- reference_posterior_summary_statistics(x = po))
-  expect_identical(rpm1, rpm2$mean)
+  expect_identical(rpm1, rpm2$mean_value)
 
   expect_output(print(rpm1), "Posterior: eight_schools-eight_schools_noncentered")
 
@@ -60,13 +60,13 @@ test_that("compute and write summary_statistics", {
 
 
   expect_silent(rpt <- pdb_reference_posterior_summary_statistics(x = "test_data-test_model", pdb = pdb_test))
-  expect_equal(rpt$mean$mean, rpm$mean, tolerance = 0.000000000000001)
-  expect_equal(rpt$mean$mcse_mean, rpm$mcse_mean, tolerance = 0.000000000000001)
-  expect_identical(info(rpm), info(rpt$mean))
-  expect_identical(rpm$names, rpt$mean$names)
+  expect_equal(rpt$mean_value$mean_value, rpm$mean_value, tolerance = 0.000000000000001)
+  expect_equal(rpt$mean_value$mcse_mean, rpm$mcse_mean, tolerance = 0.000000000000001)
+  expect_identical(info(rpm), info(rpt$mean_value))
+  expect_identical(rpm$names, rpt$mean_value$names)
 
   # Remove rpd
-  expect_silent(remove_pdb(rpt$mean, pdb = pdb_test))
+  expect_silent(remove_pdb(rpt$mean_value, pdb = pdb_test))
   expect_silent(remove_pdb(rpt$sd, pdb = pdb_test))
   pdb_clear_cache(pdb_test)
   expect_error(pdb_reference_posterior_draws("test_data-test_model", pdb_test))
