@@ -11,10 +11,11 @@ compute_reference_posterior_summary_statistic <- function(rpd, summary_statistic
   checkmate::assert_choice(summary_statistic, supported_summary_statistic_types())
   assert_checked_summary_statistics_draws(rpd)
 
-  if(summary_statistic == "mean"){
+  if(summary_statistic == "mean_value"){
     res <- posterior::summarise_draws(rpd, "mean", "mcse_mean")
     res <- as.list(res)
     names(res)[1] <- "names"
+    names(res)[2] <- "mean_value"
     rpi$versions$r_summary_statistic <- paste0("posterior R package, version ", utils::packageVersion("posterior"))
   } else if (summary_statistic == "sd"){
     res <- posterior::summarise_draws(rpd, "sd", "mcse_sd")

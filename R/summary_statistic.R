@@ -1,5 +1,5 @@
 
-supported_summary_statistic_types <- function() c("mean", "sd")
+supported_summary_statistic_types <- function() c("mean_value", "sd")
 
 summary_statistic_class_name <- function(type){
   checkmate::assert_subset(type, supported_summary_statistic_types())
@@ -40,9 +40,9 @@ print.pdb_reference_posterior_summary_statistic <- function(x, ...) {
 assert_reference_posterior_summary_statistic <- function(x){
   checkmate::assert_class(x, c("pdb_reference_posterior_summary_statistic"))
   sst <- summary_statistic_type(x)
-
+  if (sst == "mean_value") sst <- "mean"
   checkmate::assert_names(names(x)[1], identical.to = c("names"))
-  checkmate::assert_true(all(grepl(names(x)[-1], pattern = sst)))
+  checkmate::assert_true(any(grepl(names(x)[-1], pattern = sst)))
   checkmate::assert_true(any(grepl(names(x)[-1], pattern = paste0("mcse_", sst))))
 
   checkmate::assert_character(x[[1]])
