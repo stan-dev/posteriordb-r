@@ -244,9 +244,11 @@ assert_reference_posterior_info <- function(x){
   checkmate::assert_string(x$added_by)
   checkmate::assert_date(x$added_date)
   if(!is.null(x$versions)){
-    checkmate::assert_names(names(x$versions), subset.of = c("rstan_version", "r_Makevars", "r_version", "r_session", "r_summary_statistic"))
+    checkmate::assert_names(names(x$versions), subset.of = c("rstan_version", "cmdstan_version", "r_Makevars", "r_version", "r_session", "r_summary_statistic"))
     if(!is.null(x$versions$rstan_version)){
       checkmate::assert_names(names(x$versions), must.include = c("rstan_version", "r_Makevars", "r_version", "r_session"))
+    } else if(!is.null(x$versions$cmdstan_version)){
+      checkmate::assert_names(names(x$versions), must.include = c("cmdstan_version", "r_Makevars", "r_version", "r_session"))
     }
     for(i in seq_along(x$versions)){
       checkmate::assert_string(x$versions[[i]])
