@@ -76,7 +76,7 @@ assert_model_info <- function(x){
   checkmate::assert_string(x$name)
   checkmate::assert_names(names(x$model_implementations), subset.of = supported_frameworks())
   for(i in seq_along(x$model_implementations)){
-    checkmate::assert_names(names(x$model_implementations[[i]]), must.include = "model_code", subset.of = c("model_code", "likelihood_code", "stan_version"))
+    checkmate::assert_names(names(x$model_implementations[[i]]), must.include = "model_code", subset.of = c("model_code", "likelihood_code", "stan_version", "pymc_version"))
   }
   checkmate::assert_string(x$title)
   checkmate::assert_string(x$added_by)
