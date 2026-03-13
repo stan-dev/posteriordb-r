@@ -94,7 +94,12 @@ model_code_file_path.pdb_model_info <- function(x, framework, pdb = pdb_default(
 #' @rdname model_code
 #' @export
 model_code_file_path.character <- function(x, framework, pdb = pdb_default(), ...) {
-  fn <- paste0(x, ".", framework)
+  if (framework %in% c("pymc", "pymc3")) { 
+    ft <- "py" }
+  else if (framework == "stan"){
+    ft <- "stan"
+  }
+  fn <- paste0(x, ".", ft)
   mcfp <- pdb_cached_local_file_path(pdb = pdb, path = file.path("models", framework, fn), unzip = FALSE)
   mcfp
 }

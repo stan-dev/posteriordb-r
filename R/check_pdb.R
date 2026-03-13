@@ -77,8 +77,11 @@ check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks
 check_pdb_read_model_code <- function(posterior_list){
   pl <- lapply(posterior_list, checkmate::assert_class, classes = "pdb_posterior")
   for (i in seq_along(pl)) {
-    model_info(pl[[i]])
-    stan_code(pl[[i]])
+    mi <- model_info(pl[[i]])
+    frameworks <- names(mi$model_implementations)
+    for (framework in frameworks) {
+      model_code(pl[[i]], framework = framework)
+    }
   }
 }
 
