@@ -189,3 +189,5 @@ We can now write the reference posterior draws to the posteriordb.
 We can also remove the reference posterior object with
 
     remove_pdb(rp, pdbl)
+
+All contributions must follow the [Stan AI Contribution Policy](https://github.com/stan-dev/stan/wiki/AI-Contribution-Policy).
