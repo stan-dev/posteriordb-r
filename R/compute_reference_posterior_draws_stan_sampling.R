@@ -4,10 +4,10 @@
 #' @param pdb a [pdb] object.
 #'
 #' @export
-compute_reference_posterior_draws <- function(rpi, pdb = pdb_default()){
+compute_reference_posterior_draws <- function(rpi, pdb = pdb_default()) {
   checkmate::assert_class(pdb, "pdb")
   assert_reference_posterior_info(x = rpi)
-  if(rpi$inference$method == "stan_sampling"){
+  if (rpi$inference$method == "stan_sampling") {
     rp <- compute_reference_posterior_draws_stan_sampling(rpi, pdb)
   } else {
     stop("Currently not implemented")
@@ -20,7 +20,7 @@ compute_reference_posterior_draws <- function(rpi, pdb = pdb_default()){
 #' @param rpi a [reference_posterior_info] object.
 #' @param pdb a [pdb] object.
 #'
-compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
+compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb) {
   checkmate::assert_class(pdb, "pdb")
   assert_reference_posterior_info(x = rpi)
   po <- posterior(rpi$name, pdb = pdb)
@@ -30,11 +30,16 @@ compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
   rpi$versions <- pdb_stan_sampling_versions()
 
   # Run Stan
-  stan_object <- run_stan.pdb_posterior(po,
-                          stan_args = rpi$inference$method_arguments)
+  stan_object <- run_stan.pdb_posterior(
+    po,
+    stan_args = rpi$inference$method_arguments
+  )
 
   # Compute the diagnostics from the stan object and add it to the slot
-  rpi$diagnostics <- compute_stan_sampling_diagnostics(x = stan_object, keep_dimensions = pdn)
+  rpi$diagnostics <- compute_stan_sampling_diagnostics(
+    x = stan_object,
+    keep_dimensions = pdn
+  )
 
   # Create rpd object
   rpd <- as.reference_posterior_draws(x = stan_object, info = rpi, pdb = pdb)
@@ -46,11 +51,14 @@ compute_reference_posterior_draws_stan_sampling <- function(rpi, pdb){
 }
 
 
-
-
 #' @rdname reference_posterior_draws
 #' @export
-as.reference_posterior_draws.stanfit <- function(x, info, pdb = pdb_default(), ...){
+as.reference_posterior_draws.stanfit <- function(
+  x,
+  info,
+  pdb = pdb_default(),
+  ...
+) {
   checkmate::assert_class(info, "pdb_reference_posterior_info")
   draws <- posterior::as_draws_list(posterior::as_draws(x))
   as.reference_posterior_draws(draws, info = info, pdb = pdb)
@@ -67,7 +75,7 @@ as.reference_posterior_draws.stanfit <- function(x, info, pdb = pdb_default(), .
 #'
 #' @keywords internal
 #' @noRd
-compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
+compute_stan_sampling_diagnostics <- function(x, keep_dimensions) {
   checkmate::assert_character(keep_dimensions)
 
   d <- list()
@@ -76,7 +84,6 @@ compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
   checkmate::assert_subset(keep_dimensions, pds$variable)
 
   keep_idx <- pds$variable %in% keep_dimensions
-
 
   # diagnostic_information
   d$diagnostic_information <- list(names = pds$variable[keep_idx])
@@ -98,7 +105,9 @@ compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
 
   # divergent_transitions
   hmc_params <- rstan::get_sampler_params(x, inc_warmup = FALSE)
-  d$divergent_transitions <- unlist(lapply(hmc_params, function(x) sum(x[, "divergent__"])))
+  d$divergent_transitions <- unlist(lapply(hmc_params, function(x) {
+    sum(x[, "divergent__"])
+  }))
 
   # expected_fraction_of_missing_information
   d$expected_fraction_of_missing_information <- rstan::get_bfmi(x)
@@ -110,28 +119,73 @@ compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
 #' Construct dimension names from a posterior dimension list
 #'
 #' @param x a dimensions slot from a [pdb_posterior]
-posterior_dimension_names <- function(x){
+posterior_dimension_names <- function(x) {
   checkmate::assert_list(x)
   checkmate::assert_named(x)
-  for(i in seq_along(x)) checkmate::assert_int(x[[i]])
 
-  dn <- list()
-  for(i in seq_along(x)){
-    if(x[[i]] > 1L){
-      dn[[i]] <- paste0(names(x)[i], "[", 1:x[[i]], "]")
-    } else {
-      dn[[i]] <- names(x)[i]
-    }
-  }
-  return(unlist(dn))
+  dn <- Map(
+    function(parameter, dims) {
+      # RStan represents scalars as integer(0)
+      if (length(dims) == 0L) {
+        return(parameter)
+      }
+
+      checkmate::assert_integerish(
+        dims,
+        lower = 1,
+        min.len = 1,
+        any.missing = FALSE
+      )
+
+      dims <- as.integer(dims)
+
+      # Scalar explicitly represented as 1
+      if (length(dims) == 1L && dims == 1L) {
+        return(parameter)
+      }
+
+      indices <- do.call(
+        expand.grid,
+        c(
+          lapply(dims, seq_len),
+          KEEP.OUT.ATTRS = FALSE,
+          stringsAsFactors = FALSE
+        )
+      )
+
+      paste0(
+        parameter,
+        "[",
+        apply(indices, 1L, paste, collapse = ","),
+        "]"
+      )
+    },
+    names(x),
+    x
+  )
+
+  unlist(dn, use.names = FALSE)
 }
 
 #' Extract relevant stan versions
-pdb_stan_sampling_versions <- function(){
-  M <- file.path(Sys.getenv("HOME"), ".R", ifelse(.Platform$OS.type == "windows", "Makevars.win", "Makevars"))
-  Mfile <- if(file.exists(M)) paste(readLines(M), collapse = "\n") else "[Could not find Makevar file]"
-  list(rstan_version = paste("rstan", utils::packageVersion("rstan")),
-       r_Makevars = paste(Mfile, collapse = "\n"),
-       r_version = R.version$version.string,
-       r_session = paste(utils::capture.output(print(utils::sessionInfo())), collapse = "\n"))
+pdb_stan_sampling_versions <- function() {
+  M <- file.path(
+    Sys.getenv("HOME"),
+    ".R",
+    ifelse(.Platform$OS.type == "windows", "Makevars.win", "Makevars")
+  )
+  Mfile <- if (file.exists(M)) {
+    paste(readLines(M), collapse = "\n")
+  } else {
+    "[Could not find Makevar file]"
+  }
+  list(
+    rstan_version = paste("rstan", utils::packageVersion("rstan")),
+    r_Makevars = paste(Mfile, collapse = "\n"),
+    r_version = R.version$version.string,
+    r_session = paste(
+      utils::capture.output(print(utils::sessionInfo())),
+      collapse = "\n"
+    )
+  )
 }
