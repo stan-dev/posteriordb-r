@@ -37,13 +37,13 @@ get_data.character <- function(x, pdb = pdb_default(), ...) {
 
 #' @rdname get_data
 #' @export
-get_data.pdb_data_info <- function(x, pdb = pdb_default(), ...){
+get_data.pdb_data_info <- function(x, pdb = pdb_default(), ...) {
   get_data(x$name, pdb)
 }
 
 #' @rdname get_data
 #' @export
-as.pdb_data.list <- function(x, info, ...){
+as.pdb_data.list <- function(x, info, ...) {
   checkmate::assert_class(info, "pdb_data_info")
   class(x) <- c("pdb_data", "list")
   info(x) <- info
@@ -66,7 +66,11 @@ data_file_path <- function(x, ...) {
 #' @inheritParams model_code_file_path
 #' @export
 data_file_path.pdb_posterior <- function(x, ...) {
-  fp <- pdb_cached_local_file_path(pdb = pdb(x), path = x$data_info$data_file, unzip = TRUE)
+  fp <- pdb_cached_local_file_path(
+    pdb = pdb(x),
+    path = x$data_info$data_file,
+    unzip = TRUE
+  )
   checkmate::assert_file_exists(fp)
   fp
 }
@@ -76,7 +80,11 @@ data_file_path.pdb_posterior <- function(x, ...) {
 data_file_path.character <- function(x, pdb = pdb_default(), ...) {
   checkmate::assert_string(x)
   fn <- paste0(x, ".json")
-  fp <- pdb_cached_local_file_path(pdb = pdb, path = file.path("data", "data", fn), unzip = TRUE)
+  fp <- pdb_cached_local_file_path(
+    pdb = pdb,
+    path = file.path("data", "data", fn),
+    unzip = TRUE
+  )
   checkmate::assert_file_exists(fp)
   fp
 }
@@ -102,7 +110,7 @@ stan_data <- function(x) {
 #' Assert the data format
 #' @noRd
 #' @keywords internal
-assert_data <- function(x){
+assert_data <- function(x) {
   checkmate::assert_list(x)
   checkmate::assert_class(x, "pdb_data")
   checkmate::assert_named(x, type = "unique")

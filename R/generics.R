@@ -13,7 +13,7 @@ info <- function(x) {
 #' @inheritParams info
 #' @param value an info object
 #' @export
-`info<-` <- function(x, value){
+`info<-` <- function(x, value) {
   attr(x, "info") <- value
   x
 }

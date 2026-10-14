@@ -6,21 +6,21 @@
 #' @param pdb a \code{pdb} object.
 #' @param ... further arguments to supply to \code{dplyr::filter()}
 #' @export
-posteriors_tbl_df <- function(pdb = pdb_default(), ...){
+posteriors_tbl_df <- function(pdb = pdb_default(), ...) {
   pdb_tibble(pdb, path = "posteriors")
 }
 
-models_tbl_df <- function(pdb = pdb_default(), ...){
+models_tbl_df <- function(pdb = pdb_default(), ...) {
   pdb_tibble(pdb, path = "models/info")
 }
 
-data_tbl_df <- function(pdb = pdb_default(), ...){
+data_tbl_df <- function(pdb = pdb_default(), ...) {
   pdb_tibble(pdb, path = "data/info")
 }
 
 #' @noRd
 #' @keywords internal
-pdb_tibble <- function(pdb, path, ...){
+pdb_tibble <- function(pdb, path, ...) {
   checkmate::assert_class(pdb, "pdb")
   checkmate::assert_choice(path, c("posteriors", "models/info", "data/info"))
 
@@ -28,7 +28,7 @@ pdb_tibble <- function(pdb, path, ...){
   fnms <- pdb_list_files_in_cache(pdb, path, file_ext = FALSE)
 
   obj_list <- list()
-  for(i in seq_along(fnms)) {
+  for (i in seq_along(fnms)) {
     x <- read_info_json(fnms[i], path = path, pdb = pdb)
     obj_list[[i]] <- as.data.frame(x)
   }
@@ -46,12 +46,28 @@ pdb_tibble <- function(pdb, path, ...){
 #' @param ... further arguments to \code{as.data.frame} for a list.
 #' @param optional Not used.
 #' @export
-as.data.frame.pdb_posterior <- function(x, row.names = NULL, optional = FALSE, ...){
+as.data.frame.pdb_posterior <- function(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  ...
+) {
   kws <- unlist(x$keywords)
-  elements <- c("name", "model_name", "reference_posterior_name", "data_name", "added_by", "added_date")
-  if(is.null(x$reference_posterior_name)) x$reference_posterior_name <- "NULL"
-  df <- as.data.frame(x[elements], stringsAsFactors = FALSE, ...)[rep(1, max(1,length(kws))), ]
-  if(length(kws) == 0){
+  elements <- c(
+    "name",
+    "model_name",
+    "reference_posterior_name",
+    "data_name",
+    "added_by",
+    "added_date"
+  )
+  if (is.null(x$reference_posterior_name)) {
+    x$reference_posterior_name <- "NULL"
+  }
+  df <- as.data.frame(x[elements], stringsAsFactors = FALSE, ...)[
+    rep(1, max(1, length(kws))),
+  ]
+  if (length(kws) == 0) {
     df$keywords <- ""
   } else {
     df$keywords <- kws

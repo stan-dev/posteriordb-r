@@ -40,10 +40,18 @@ model_info.character <- function(x, pdb = pdb_default(), ...) {
 #' @export
 as.model_info.list <- function(x, pdb = NULL, ...) {
   class(x) <- "pdb_model_info"
-  if(!is.null(x$framework)){
+  if (!is.null(x$framework)) {
     checkmate::assert_null(x$model_implementations)
-    mi <- list(list("model_code" = paste0("models/", x$framework,"/", x$name, ".",
-                supported_frameworks_file_extension(x$framework))))
+    mi <- list(list(
+      "model_code" = paste0(
+        "models/",
+        x$framework,
+        "/",
+        x$name,
+        ".",
+        supported_frameworks_file_extension(x$framework)
+      )
+    ))
     x$model_implementations <- mi
     names(x$model_implementations) <- x$framework
     x$framework <- NULL
@@ -65,18 +73,54 @@ read_model_info <- function(x, pdb = NULL, ...) {
 print.pdb_model_info <- function(x, ...) {
   cat0("Model: ", x$name, "\n")
   cat0(x$title, "\n")
-  cat0("Frameworks: '", paste(names(x$model_implementations), collapse = "', '"), "'\n")
+  cat0(
+    "Frameworks: '",
+    paste(names(x$model_implementations), collapse = "', '"),
+    "'\n"
+  )
   invisible(x)
 }
 
-assert_model_info <- function(x){
-  checkmate::assert_names(names(x),
-                          subset.of = c("name", "model_implementations", "title", "prior", "added_by", "added_date", "references", "description", "urls", "keywords", "licence"),
-                          must.include = c("name", "model_implementations", "title", "added_by", "added_date"))
+assert_model_info <- function(x) {
+  checkmate::assert_names(
+    names(x),
+    subset.of = c(
+      "name",
+      "model_implementations",
+      "title",
+      "prior",
+      "added_by",
+      "added_date",
+      "references",
+      "description",
+      "urls",
+      "keywords",
+      "licence"
+    ),
+    must.include = c(
+      "name",
+      "model_implementations",
+      "title",
+      "added_by",
+      "added_date"
+    )
+  )
   checkmate::assert_string(x$name)
-  checkmate::assert_names(names(x$model_implementations), subset.of = supported_frameworks())
-  for(i in seq_along(x$model_implementations)){
-    checkmate::assert_names(names(x$model_implementations[[i]]), must.include = "model_code", subset.of = c("model_code", "likelihood_code", "stan_version", "pymc_version"))
+  checkmate::assert_names(
+    names(x$model_implementations),
+    subset.of = supported_frameworks()
+  )
+  for (i in seq_along(x$model_implementations)) {
+    checkmate::assert_names(
+      names(x$model_implementations[[i]]),
+      must.include = "model_code",
+      subset.of = c(
+        "model_code",
+        "likelihood_code",
+        "stan_version",
+        "pymc_version"
+      )
+    )
   }
   checkmate::assert_string(x$title)
   checkmate::assert_string(x$added_by)

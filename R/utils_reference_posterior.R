@@ -5,27 +5,30 @@
 #' @param ... currently not used.
 #'
 #' @export
-check_summary_statistics_draws <- function(x, ...){
+check_summary_statistics_draws <- function(x, ...) {
   UseMethod("check_summary_statistics_draws")
 }
 
 #' @rdname check_summary_statistics_draws
 #' @export
-check_summary_statistics_draws.character <- function(x, ...){
+check_summary_statistics_draws.character <- function(x, ...) {
   x <- pdb_posterior(x, ...)
   check_summary_statistics_draws(x)
 }
 
 #' @rdname check_summary_statistics_draws
 #' @export
-check_summary_statistics_draws.pdb_posterior <- function(x, ...){
+check_summary_statistics_draws.pdb_posterior <- function(x, ...) {
   x <- reference_posterior_draws(x)
   check_summary_statistics_draws(x)
 }
 
 #' @rdname check_summary_statistics_draws
 #' @export
-check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...){
+check_summary_statistics_draws.pdb_reference_posterior_draws <- function(
+  x,
+  ...
+) {
   assert_reference_posterior_draws(x)
   rpi <- info(x)
   assert_reference_posterior_info(rpi)
@@ -36,15 +39,23 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
   checkmate::assert_true(rpi$diagnostics$ndraws >= 10000)
   tst$ndraws_is_gte_10k <- TRUE
 
-  if(rpi$inference$method == "stan_sampling"){
+  if (rpi$inference$method == "stan_sampling") {
     # Assert that at least 4 chains has been used
     checkmate::assert_true(rpi$diagnostics$nchains >= 4)
     tst$nchains_is_gte_4 <- TRUE
 
     # Assert the effective sample size is correct/within bounds
     ess_bnds <- ess_bounds(x)
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_bulk, lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1])
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_tail, lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
+    checkmate::assert_numeric(
+      rpi$diagnostics$effective_sample_size_bulk,
+      lower = ess_bnds$ess_bulk[2],
+      upper = ess_bnds$ess_bulk[1]
+    )
+    checkmate::assert_numeric(
+      rpi$diagnostics$effective_sample_size_tail,
+      lower = ess_bnds$ess_tail[2],
+      upper = ess_bnds$ess_tail[1]
+    )
     tst$ess_within_bounds <- TRUE
 
     # Assert all Rhat < 1.01
@@ -52,9 +63,11 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
     tst$r_hat_below_1_01 <- TRUE
 
     # Assert that the EFMI is larger than 0.2
-    checkmate::assert_numeric(rpi$diagnostics$expected_fraction_of_missing_information, lower = 0.2)
+    checkmate::assert_numeric(
+      rpi$diagnostics$expected_fraction_of_missing_information,
+      lower = 0.2
+    )
     tst$efmi_above_0_2 <- TRUE
-
   }
 
   # Add checks made to reference posterior
@@ -78,27 +91,30 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
 #' @param ... currently not used.
 #'
 #' @export
-check_reference_posterior_draws <- function(x, ...){
+check_reference_posterior_draws <- function(x, ...) {
   UseMethod("check_reference_posterior_draws")
 }
 
 #' @rdname check_reference_posterior_draws
 #' @export
-check_reference_posterior_draws.character <- function(x, ...){
+check_reference_posterior_draws.character <- function(x, ...) {
   x <- pdb_posterior(x, ...)
   check_reference_posterior_draws(x)
 }
 
 #' @rdname check_reference_posterior_draws
 #' @export
-check_reference_posterior_draws.pdb_posterior <- function(x, ...){
+check_reference_posterior_draws.pdb_posterior <- function(x, ...) {
   x <- reference_posterior_draws(x)
   check_reference_posterior_draws(x)
 }
 
 #' @rdname check_reference_posterior_draws
 #' @export
-check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...){
+check_reference_posterior_draws.pdb_reference_posterior_draws <- function(
+  x,
+  ...
+) {
   assert_reference_posterior_draws(x)
   rpi <- info(x)
   assert_reference_posterior_info(rpi)
@@ -109,15 +125,23 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
   checkmate::assert_true(rpi$diagnostics$ndraws == 10000)
   tst$ndraws_is_10k <- TRUE
 
-  if(rpi$inference$method == "stan_sampling"){
+  if (rpi$inference$method == "stan_sampling") {
     # Assert that at least 4 chains has been used
     checkmate::assert_true(rpi$diagnostics$nchains >= 4)
     tst$nchains_is_gte_4 <- TRUE
 
     # Assert the effective sample size is correct/within bounds
     ess_bnds <- ess_bounds(x)
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_bulk, lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1])
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_tail, lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
+    checkmate::assert_numeric(
+      rpi$diagnostics$effective_sample_size_bulk,
+      lower = ess_bnds$ess_bulk[2],
+      upper = ess_bnds$ess_bulk[1]
+    )
+    checkmate::assert_numeric(
+      rpi$diagnostics$effective_sample_size_tail,
+      lower = ess_bnds$ess_tail[2],
+      upper = ess_bnds$ess_tail[1]
+    )
     tst$ess_within_bounds <- TRUE
 
     # Assert all Rhat < 1.01
@@ -125,9 +149,11 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
     tst$r_hat_below_1_01 <- TRUE
 
     # Assert that the EFMI is larger than 0.2
-    checkmate::assert_numeric(rpi$diagnostics$expected_fraction_of_missing_information, lower = 0.2)
+    checkmate::assert_numeric(
+      rpi$diagnostics$expected_fraction_of_missing_information,
+      lower = 0.2
+    )
     tst$efmi_above_0_2 <- TRUE
-
   }
 
   # Add checks made to reference posterior
@@ -150,7 +176,7 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
 #'
 #' @param x a [pdb_reference_posterior_draws] object.
 #' @keywords internal
-ess_bounds <- function(x){
+ess_bounds <- function(x) {
   checkmate::assert_class(x, "draws")
 
   npar <- posterior::nvariables(x)
@@ -163,7 +189,5 @@ ess_bounds <- function(x){
   #  alpha <- 1 - exp(log(p)/npar)
   #  essb <- esst <- NULL # To mask check NOTEs
 
-  list(ess_bulk = bnds,
-       ess_tail = bnds)
-
+  list(ess_bulk = bnds, ess_tail = bnds)
 }

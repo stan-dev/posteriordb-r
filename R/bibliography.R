@@ -4,7 +4,7 @@
 #' @param ... further arguments passed to [bibtex::read.bib]
 #'
 #' @export
-bibliography <- function(pdb, ...){
+bibliography <- function(pdb, ...) {
   checkmate::assert_class(pdb, "pdb")
   fp <- file.path("bibliography/references.bib")
   pfn <- pdb_cached_local_file_path(pdb, path = fp)

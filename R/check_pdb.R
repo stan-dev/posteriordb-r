@@ -22,60 +22,108 @@
 #' @return a boolean indicating if the pdb works as it should.
 #'
 #' @export
-check_pdb <- function(pdb, posterior_names_to_check = NULL, run_stan_code_checks = FALSE, verbose = TRUE) {
+check_pdb <- function(
+  pdb,
+  posterior_names_to_check = NULL,
+  run_stan_code_checks = FALSE,
+  verbose = TRUE
+) {
   checkmate::assert_class(pdb, "pdb")
   checkmate::assert_choice(pdb_type(pdb), "local")
-  checkmate::assert_subset(posterior_names_to_check, choices = posterior_names(pdb))
+  checkmate::assert_subset(
+    posterior_names_to_check,
+    choices = posterior_names(pdb)
+  )
   checkmate::assert_flag(verbose)
 
-  if(verbose) message("Checking posterior database...")
-  if(verbose & !run_stan_code_checks) message("No checking of Stan code and syntax.")
-  if(verbose & run_stan_code_checks) message("Checking that Stan can be run for posteriors.")
+  if (verbose) {
+    message("Checking posterior database...")
+  }
+  if (verbose & !run_stan_code_checks) {
+    message("No checking of Stan code and syntax.")
+  }
+  if (verbose & run_stan_code_checks) {
+    message("Checking that Stan can be run for posteriors.")
+  }
   return_status <- 0L
 
-  if(!is.null(posterior_names_to_check)) {
+  if (!is.null(posterior_names_to_check)) {
     pns <- posterior_names_to_check
   } else {
     pns <- posterior_names(pdb)
   }
 
-  if(verbose) message("\nChecking individual posteriors:")
-  for(i in seq_along(pns)){
-    if(verbose) message("- '", pns[i], "'")
-    res <- try(check_pdb_posterior(pdb_posterior(x = pns[i], pdb), run_stan_code_checks = run_stan_code_checks, verbose = FALSE))
-    if(inherits(res, "try-error")) return_status <- 1L
+  if (verbose) {
+    message("\nChecking individual posteriors:")
+  }
+  for (i in seq_along(pns)) {
+    if (verbose) {
+      message("- '", pns[i], "'")
+    }
+    res <- try(check_pdb_posterior(
+      pdb_posterior(x = pns[i], pdb),
+      run_stan_code_checks = run_stan_code_checks,
+      verbose = FALSE
+    ))
+    if (inherits(res, "try-error")) return_status <- 1L
   }
 
-
-  if(verbose) message("\nChecking general posterior database:")
+  if (verbose) {
+    message("\nChecking general posterior database:")
+  }
   res <- try(check_pdb_aliases(pdb))
-  if(inherits(res, "try-error")) {return_status <- 1L} else {
-  if(verbose) message("- Aliases are ok.")}
+  if (inherits(res, "try-error")) {
+    return_status <- 1L
+  } else {
+    if (verbose) message("- Aliases are ok.")
+  }
 
   res <- try(check_pdb_all_models_have_posterior(pdb))
-  if(inherits(res, "try-error")) {return_status <- 1L} else {
-  if(verbose) message("- All models are part of a posterior.")}
+  if (inherits(res, "try-error")) {
+    return_status <- 1L
+  } else {
+    if (verbose) message("- All models are part of a posterior.")
+  }
 
   res <- try(check_pdb_all_data_have_posterior(pdb))
-  if(inherits(res, "try-error")) {return_status <- 1L} else {
-  if(verbose) message("- All data are part of a posterior.")}
+  if (inherits(res, "try-error")) {
+    return_status <- 1L
+  } else {
+    if (verbose) message("- All data are part of a posterior.")
+  }
 
   res <- try(check_pdb_all_reference_posteriors_have_posterior(pdb))
-  if(inherits(res, "try-error")) {return_status <- 1L} else {
-  if(verbose) message("- All reference posteriors are part of a posterior.")}
+  if (inherits(res, "try-error")) {
+    return_status <- 1L
+  } else {
+    if (verbose) message("- All reference posteriors are part of a posterior.")
+  }
 
   try(check_pdb_references(pdb))
-  if(inherits(res, "try-error")) {return_status <- 1L} else {
-  if(verbose) message("- All bibliography elements exist in a data, model or posterior object.")}
+  if (inherits(res, "try-error")) {
+    return_status <- 1L
+  } else {
+    if (verbose) {
+      message(
+        "- All bibliography elements exist in a data, model or posterior object."
+      )
+    }
+  }
 
-  if(verbose & return_status == 0L) message("\nPosterior database is ok.\n")
+  if (verbose & return_status == 0L) {
+    message("\nPosterior database is ok.\n")
+  }
   invisible(return_status)
 }
 
 
 #' @rdname check_pdb
-check_pdb_read_model_code <- function(posterior_list){
-  pl <- lapply(posterior_list, checkmate::assert_class, classes = "pdb_posterior")
+check_pdb_read_model_code <- function(posterior_list) {
+  pl <- lapply(
+    posterior_list,
+    checkmate::assert_class,
+    classes = "pdb_posterior"
+  )
   for (i in seq_along(pl)) {
     mi <- model_info(pl[[i]])
     frameworks <- names(mi$model_implementations)
@@ -86,7 +134,7 @@ check_pdb_read_model_code <- function(posterior_list){
 }
 
 #' @rdname check_pdb
-check_pdb_aliases <- function(pdb){
+check_pdb_aliases <- function(pdb) {
   a <- pdb_aliases("posteriors", pdb)
   checkmate::assert_character(names(a), unique = TRUE)
   pn <- unname(unlist(a))
@@ -96,8 +144,12 @@ check_pdb_aliases <- function(pdb){
 }
 
 #' @rdname check_pdb
-check_pdb_read_data <- function(posterior_list){
-  pl <- lapply(posterior_list, checkmate::assert_class, classes = "pdb_posterior")
+check_pdb_read_data <- function(posterior_list) {
+  pl <- lapply(
+    posterior_list,
+    checkmate::assert_class,
+    classes = "pdb_posterior"
+  )
   for (i in seq_along(pl)) {
     data_info(x = pl[[i]])
     sd <- stan_data(x = pl[[i]])
@@ -106,10 +158,16 @@ check_pdb_read_data <- function(posterior_list){
 }
 
 #' @rdname check_pdb
-check_pdb_read_reference_posterior_draws <- function(posterior_list){
-  pl <- lapply(posterior_list, checkmate::assert_class, classes = "pdb_posterior")
+check_pdb_read_reference_posterior_draws <- function(posterior_list) {
+  pl <- lapply(
+    posterior_list,
+    checkmate::assert_class,
+    classes = "pdb_posterior"
+  )
   for (i in seq_along(pl)) {
-    if(is.null(pl[[i]]$reference_posterior_name)) next
+    if (is.null(pl[[i]]$reference_posterior_name)) {
+      next
+    }
     rp <- reference_posterior_draws(x = pl[[i]])
     pdb_cache_rm(rp, pl$pdb[[i]])
   }
@@ -119,17 +177,23 @@ check_pdb_read_reference_posterior_draws <- function(posterior_list){
 #' @rdname check_pdb
 check_pdb_posterior_run_stan <- function(po) {
   checkmate::assert_class(po, "pdb_posterior")
-  suppressWarnings(so <- utils::capture.output(run_stan(po, stan_args = list(iter = 2, warmup = 0, chains = 1))))
+  suppressWarnings(
+    so <- utils::capture.output(run_stan(
+      po,
+      stan_args = list(iter = 2, warmup = 0, chains = 1)
+    ))
+  )
   so
 }
 
 
 check_posterior_stan_syntax <- function(po) {
   checkmate::assert_class(po, "pdb_posterior")
-  suppressWarnings(sp <- rstan::stanc(model_code = stan_code(po), model_name = po$model_name))
+  suppressWarnings(
+    sp <- rstan::stanc(model_code = stan_code(po), model_name = po$model_name)
+  )
   sp
 }
-
 
 
 #' @rdname check_pdb
@@ -151,41 +215,65 @@ check_pdb_references <- function(pdb) {
   bibnms <- names(bib)
 
   bib_in_ref <- bibnms %in% refs
-  if(any(!bib_in_ref)){
-    stop("Reference '", bibnms[!bib_in_ref], "'exist in bibliography but not in any posterior, data or model.", call. = FALSE)
+  if (any(!bib_in_ref)) {
+    stop(
+      "Reference '",
+      bibnms[!bib_in_ref],
+      "'exist in bibliography but not in any posterior, data or model.",
+      call. = FALSE
+    )
   }
 }
 
 #' @rdname check_pdb
-check_pdb_posterior_references <- function(posterior_list){
-  pos <- lapply(posterior_list, checkmate::assert_class, classes = "pdb_posterior")
+check_pdb_posterior_references <- function(posterior_list) {
+  pos <- lapply(
+    posterior_list,
+    checkmate::assert_class,
+    classes = "pdb_posterior"
+  )
   for (i in seq_along(pos)) {
     bib <- pdb_bibliography(pdb = pdb(pos[[i]]))
     bibnames <- names(bib)
 
     porefs <- pos[[i]]$references
     ref_in_bib <- porefs %in% bibnames
-    if(any(!ref_in_bib)){
-      stop("Posterior reference '", porefs[!ref_in_bib], "' does not exist in the bibliography.", call. = FALSE)
+    if (any(!ref_in_bib)) {
+      stop(
+        "Posterior reference '",
+        porefs[!ref_in_bib],
+        "' does not exist in the bibliography.",
+        call. = FALSE
+      )
     }
 
     mrefs <- pdb_model_info(pos[[i]])$references
     ref_in_bib <- mrefs %in% bibnames
-    if(any(!ref_in_bib)){
-      stop("Model reference '", mrefs[!ref_in_bib], "' does not exist in the bibliography.", call. = FALSE)
+    if (any(!ref_in_bib)) {
+      stop(
+        "Model reference '",
+        mrefs[!ref_in_bib],
+        "' does not exist in the bibliography.",
+        call. = FALSE
+      )
     }
 
     drefs <- pdb_data_info(pos[[i]])$references
     ref_in_bib <- drefs %in% bibnames
-    if(any(!ref_in_bib)){
-      stop("Data reference '", drefs[!ref_in_bib], "' does not exist in the bibliography.", call. = FALSE)
+    if (any(!ref_in_bib)) {
+      stop(
+        "Data reference '",
+        drefs[!ref_in_bib],
+        "' does not exist in the bibliography.",
+        call. = FALSE
+      )
     }
   }
 }
 
 
 #' @rdname check_pdb
-check_pdb_all_models_have_posterior <- function(pdb){
+check_pdb_all_models_have_posterior <- function(pdb) {
   checkmate::assert_class(pdb, "pdb")
   pn <- posterior_names(pdb)
   mnp <- character(length(pn))
@@ -198,13 +286,18 @@ check_pdb_all_models_have_posterior <- function(pdb){
   mns <- model_names(pdb)
 
   model_bool <- mns %in% mnp
-  if(!all(model_bool)){
-    stop("Model(s) " , paste0(mns[!model_bool], collapse = ", "), " is missing in posteriors.", call. = FALSE)
+  if (!all(model_bool)) {
+    stop(
+      "Model(s) ",
+      paste0(mns[!model_bool], collapse = ", "),
+      " is missing in posteriors.",
+      call. = FALSE
+    )
   }
 }
 
 #' @rdname check_pdb
-check_pdb_all_data_have_posterior <- function(pdb){
+check_pdb_all_data_have_posterior <- function(pdb) {
   checkmate::assert_class(pdb, "pdb")
   pn <- posterior_names(pdb)
   dnp <- character(length(pn))
@@ -216,14 +309,18 @@ check_pdb_all_data_have_posterior <- function(pdb){
   dns <- data_names(pdb)
 
   data_bool <- dns %in% dnp
-  if(!all(data_bool)){
-    stop("Data " , paste0(dns[!data_bool], collapse = ", "), " is missing in posteriors.", call. = FALSE)
+  if (!all(data_bool)) {
+    stop(
+      "Data ",
+      paste0(dns[!data_bool], collapse = ", "),
+      " is missing in posteriors.",
+      call. = FALSE
+    )
   }
-
 }
 
 #' @rdname check_pdb
-check_pdb_all_reference_posteriors_have_posterior <- function(pdb){
+check_pdb_all_reference_posteriors_have_posterior <- function(pdb) {
   checkmate::assert_class(pdb, "pdb")
   pn <- posterior_names(pdb)
   rpnp <- character(length(pn))
@@ -231,7 +328,7 @@ check_pdb_all_reference_posteriors_have_posterior <- function(pdb){
   for (i in seq_along(pn)) {
     pl[[i]] <- posterior(pn[i], pdb = pdb)
     tc <- try(rp <- reference_posterior_draws_info(pl[[i]]), silent = TRUE)
-    if(!inherits(tc, "try-error")){
+    if (!inherits(tc, "try-error")) {
       rpnp[i] <- rp$name
     }
   }
@@ -239,7 +336,12 @@ check_pdb_all_reference_posteriors_have_posterior <- function(pdb){
   rpns <- reference_posterior_names(pdb, "draws")
 
   rp_bool <- rpns %in% rpnp
-  if(!all(rp_bool)){
-    stop("Reference posteriors " , paste0(rpns[!rp_bool], collapse = ", "), " is missing in posteriors.", call. = FALSE)
+  if (!all(rp_bool)) {
+    stop(
+      "Reference posteriors ",
+      paste0(rpns[!rp_bool], collapse = ", "),
+      " is missing in posteriors.",
+      call. = FALSE
+    )
   }
 }

@@ -48,13 +48,13 @@ model_code.pdb_model_info <- function(x, framework, pdb = pdb_default(), ...) {
 
 #' @rdname model_code
 #' @export
-as.model_code.stanmodel <- function(x, info, ...){
+as.model_code.stanmodel <- function(x, info, ...) {
   as.model_code(x@model_code, info = info, framework = "stan")
 }
 
 #' @rdname model_code
 #' @export
-as.model_code.character <- function(x, info, framework, ...){
+as.model_code.character <- function(x, info, framework, ...) {
   class(x) <- "pdb_model_code"
   framework(x) <- "stan"
   info(x) <- info
@@ -81,26 +81,43 @@ model_code_file_path <- function(x, ...) {
 #' @export
 model_code_file_path.pdb_posterior <- function(x, framework, ...) {
   checkmate::assert_choice(framework, names(x$model_info$model_implementations))
-  mcfp <- pdb_cached_local_file_path(pdb(x), x$model_info$model_implementations[[framework]]$model_code)
+  mcfp <- pdb_cached_local_file_path(
+    pdb(x),
+    x$model_info$model_implementations[[framework]]$model_code
+  )
   mcfp
 }
 
 #' @rdname model_code
 #' @export
-model_code_file_path.pdb_model_info <- function(x, framework, pdb = pdb_default(), ...) {
+model_code_file_path.pdb_model_info <- function(
+  x,
+  framework,
+  pdb = pdb_default(),
+  ...
+) {
   model_code_file_path(x$name, framework, pdb, ...)
 }
 
 #' @rdname model_code
 #' @export
-model_code_file_path.character <- function(x, framework, pdb = pdb_default(), ...) {
-  if (framework %in% c("pymc", "pymc3")) { 
-    ft <- "py" }
-  else if (framework == "stan"){
+model_code_file_path.character <- function(
+  x,
+  framework,
+  pdb = pdb_default(),
+  ...
+) {
+  if (framework %in% c("pymc", "pymc3")) {
+    ft <- "py"
+  } else if (framework == "stan") {
     ft <- "stan"
   }
   fn <- paste0(x, ".", ft)
-  mcfp <- pdb_cached_local_file_path(pdb = pdb, path = file.path("models", framework, fn), unzip = FALSE)
+  mcfp <- pdb_cached_local_file_path(
+    pdb = pdb,
+    path = file.path("models", framework, fn),
+    unzip = FALSE
+  )
   mcfp
 }
 
@@ -134,7 +151,7 @@ as.stan_code <- function(x, info, ...) {
 pdb_stan_code <- stan_code
 
 
-assert_model_code <- function(x){
+assert_model_code <- function(x) {
   checkmate::assert_class(x, "pdb_model_code")
   checkmate::assert_string(x)
   checkmate::assert_choice(framework(x), choices = supported_frameworks())
@@ -147,25 +164,25 @@ assert_model_code <- function(x){
 #' @param value a supported framework.
 #'
 #' @export
-framework <- function(x){
+framework <- function(x) {
   UseMethod("framework")
 }
 
 #' @rdname framework
 #' @export
-framework.pdb_model_code <- function(x){
+framework.pdb_model_code <- function(x) {
   attr(x, which = "framework")
 }
 
 #' @rdname framework
 #' @export
-`framework<-` <- function(x, value){
+`framework<-` <- function(x, value) {
   UseMethod("framework<-")
 }
 
 #' @rdname framework
 #' @export
-`framework<-.character` <- function(x, value){
+`framework<-.character` <- function(x, value) {
   checkmate::assert_choice(value, supported_frameworks())
   attr(x, "framework") <- value
   x
@@ -173,7 +190,7 @@ framework.pdb_model_code <- function(x){
 
 #' @rdname framework
 #' @export
-`framework<-.pdb_model_code` <- function(x, value){
+`framework<-.pdb_model_code` <- function(x, value) {
   checkmate::assert_choice(value, supported_frameworks())
   x <- `framework<-.character`(x, value)
   x
@@ -181,8 +198,14 @@ framework.pdb_model_code <- function(x){
 
 supported_frameworks <- function() c("stan", "pymc3", "pymc", "tfp", "pyro")
 
-supported_frameworks_file_extension <- function(x){
+supported_frameworks_file_extension <- function(x) {
   checkmate::assert_choice(x, choices = supported_frameworks())
-  sffe <- c("stan"="stan", "pymc3"="py", "pymc"="py", "tfp"="py", "pyro"="py")
+  sffe <- c(
+    "stan" = "stan",
+    "pymc3" = "py",
+    "pymc" = "py",
+    "tfp" = "py",
+    "pyro" = "py"
+  )
   sffe[x]
 }

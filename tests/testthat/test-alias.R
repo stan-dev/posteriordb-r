@@ -15,5 +15,4 @@ test_that("alias_names works as expected", {
 
   expect_failure(checkmate::expect_choice("8schools", pn))
   expect_success(checkmate::expect_choice("8schools", an))
-
 })

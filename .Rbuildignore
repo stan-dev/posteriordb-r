@@ -9,3 +9,4 @@ posteriordb*
 ^codecov\.yml$
 ^doc
 ^LICENSE\.md$
+^air\.toml$

@@ -22,15 +22,15 @@ cat0 <- function(..., file = "", fill = FALSE, labels = NULL, append = FALSE) {
 }
 
 # file.path that remove null elementd
-file.path0 <- function(...){
+file.path0 <- function(...) {
   arg <- list(...)
   do.call(file.path, arg[!unlist(lapply(arg, FUN = is.null))])
 }
 
 # Print a list as a yaml recursively
-print_list <- function(x, pad = "  "){
-  for(i in seq_along(x)){
-    if(is.list(x[[i]])) {
+print_list <- function(x, pad = "  ") {
+  for (i in seq_along(x)) {
+    if (is.list(x[[i]])) {
       print_list(x[[i]], pad = paste0(pad, pad))
     } else {
       cat0(pad, names(x)[i], ": ", x[[i]], "\n")

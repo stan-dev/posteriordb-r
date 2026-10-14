@@ -1,15 +1,19 @@
 context("test-write-pdb")
 
 test_that("write data", {
-
   expect_silent(pdb_test <- pdb_local())
-  expect_silent(po <- posterior("eight_schools-eight_schools_centered", pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_centered", pdb_test)
+  )
   expect_silent(d <- get_data(po))
 
   # Test write data
-  di <- info(d); di$name <- "test_data"; info(d) <- di
+  di <- info(d)
+  di$name <- "test_data"
+  info(d) <- di
   expect_error(write_pdb(d, pdb_test))
-  di$data_file <- "data/data/test_data.json"; info(d) <- di
+  di$data_file <- "data/data/test_data.json"
+  info(d) <- di
   expect_silent(write_pdb(d, pdb_test))
   expect_error(write_pdb(d, pdb_test))
   expect_silent(write_pdb(d, pdb_test, overwrite = TRUE))
@@ -37,16 +41,19 @@ test_that("write data", {
 
 
 test_that("write model", {
-
   expect_silent(pdb_test <- pdb_local())
-  expect_silent(po <- posterior("eight_schools-eight_schools_centered", pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_centered", pdb_test)
+  )
   expect_silent(sc <- stan_code(po))
 
   # Test write model info
   mi <- info(sc)
   mi$name <- "test_model"
   mi$title <- mi$description <- "Test model"
-  mi$model_implementations <- list(stan = list(model_code = "models/stan/test_model.stan"))
+  mi$model_implementations <- list(
+    stan = list(model_code = "models/stan/test_model.stan")
+  )
 
   # Test write model
   info(sc) <- mi
@@ -78,13 +85,11 @@ test_that("write model", {
 })
 
 
-
-
-
 test_that("write posterior", {
-
   expect_silent(pdb_test <- pdb_local())
-  expect_silent(po <- posterior("eight_schools-eight_schools_centered", pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_centered", pdb_test)
+  )
   expect_silent(sc <- stan_code(po))
   expect_silent(d <- pdb_data(po))
 
@@ -118,16 +123,18 @@ test_that("write posterior", {
 
   remove_pdb(sc, pdb = pdb_test)
   remove_pdb(d, pdb = pdb_test)
-
 })
 
 
-
 test_that("write reference_posterior", {
-  if(on_github_actions()) skip_on_os("windows")
+  if (on_github_actions()) {
+    skip_on_os("windows")
+  }
 
   expect_silent(pdb_test <- pdb_local())
-  expect_silent(po <- posterior("eight_schools-eight_schools_centered", pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_centered", pdb_test)
+  )
   expect_silent(gsi <- reference_posterior_draws_info(po))
   expect_silent(gsd <- reference_posterior_draws(po))
 
@@ -144,7 +151,9 @@ test_that("write reference_posterior", {
   expect_error(write_pdb(gsd, pdb_test))
   expect_silent(write_pdb(gsd, pdb_test, overwrite = TRUE))
 
-  expect_silent(rpt <- pdb_reference_posterior_draws(x = "test_data-test_model", pdb_test))
+  expect_silent(
+    rpt <- pdb_reference_posterior_draws(x = "test_data-test_model", pdb_test)
+  )
 
   expect_identical(info(gsd)$added_by, info(rpt)$added_by)
   expect_identical(gsd, rpt)
@@ -160,7 +169,12 @@ test_that("write reference_posterior", {
   expect_error(write_pdb(gsi, pdb_test, type = "draws"))
   expect_silent(write_pdb(gsi, pdb_test, overwrite = TRUE, type = "draws"))
 
-  expect_silent(rpi <- pdb_reference_posterior_draws_info(x = "test_data-test_model", pdb_test))
+  expect_silent(
+    rpi <- pdb_reference_posterior_draws_info(
+      x = "test_data-test_model",
+      pdb_test
+    )
+  )
   expect_identical(gsi, rpi)
   expect_silent(remove_pdb(rpi, pdb = pdb_test, type = "draws"))
 

@@ -1,15 +1,18 @@
 context("test-posterior-getters")
 
 test_that("Check that all posteriors can access stan_data and stan_code", {
-
   expect_silent(pdb_test <- pdb_local())
 
-  expect_silent(po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test)
+  )
 
   # Test stan_data_file_path
   expect_silent(sdfp <- stan_data_file_path(po))
   expect_true(file.exists(sdfp))
-  if(!posteriordb:::on_windows()) expect_true(grepl(pattern = tempdir(), x = sdfp))
+  if (!posteriordb:::on_windows()) {
+    expect_true(grepl(pattern = tempdir(), x = sdfp))
+  }
   expect_equal(posteriordb:::get_file_extension(sdfp), "json")
   expect_silent(jsonlite::read_json(sdfp))
 
@@ -21,7 +24,9 @@ test_that("Check that all posteriors can access stan_data and stan_code", {
   # Test model_code
   expect_silent(mcfp <- model_code_file_path(po, "stan"))
   expect_true(file.exists(mcfp))
-  if(!posteriordb:::on_windows()) expect_true(grepl(pattern = tempdir(), x = mcfp))
+  if (!posteriordb:::on_windows()) {
+    expect_true(grepl(pattern = tempdir(), x = mcfp))
+  }
   expect_equal(posteriordb:::get_file_extension(mcfp), "stan")
   expect_silent(scfp <- stan_code_file_path(po))
   expect_equal(scfp, mcfp)
@@ -48,9 +53,7 @@ test_that("Check that all posteriors can access stan_data and stan_code", {
   # Get posteriors draws directly
   expect_silent(gsd <- reference_posterior_draws(po))
   expect_silent(gsi <- reference_posterior_draws_info(po))
-
 })
-
 
 
 test_that("Check access only with posterior name", {
@@ -60,29 +63,59 @@ test_that("Check access only with posterior name", {
   expect_silent(di <- data_info("eight_schools", pdb_test))
   expect_silent(d1 <- get_data("eight_schools", pdb_test))
   expect_silent(d2 <- get_data(di, pdb_test))
-  expect_identical(d1,d2)
+  expect_identical(d1, d2)
   expect_silent(sdfp <- data_file_path("eight_schools", pdb_test))
   expect_silent(sdfp <- data_file_path(di, pdb_test))
   expect_true(file.exists(sdfp))
 
   # Test model_code/stan_code
-  expect_silent(mi <- model_info("eight_schools_noncentered", pdb = pdb_test, framework = "stan"))
+  expect_silent(
+    mi <- model_info(
+      "eight_schools_noncentered",
+      pdb = pdb_test,
+      framework = "stan"
+    )
+  )
   expect_silent(sc1 <- stan_code("eight_schools_noncentered", pdb = pdb_test))
   expect_silent(sc2 <- stan_code(mi, pdb = pdb_test))
-  expect_identical(sc1,sc2)
-  expect_silent(mcfp <- model_code_file_path("eight_schools_noncentered", pdb = pdb_test, framework = "stan"))
-  expect_silent(mcfp <- model_code_file_path(mi, pdb = pdb_test, framework = "stan"))
+  expect_identical(sc1, sc2)
+  expect_silent(
+    mcfp <- model_code_file_path(
+      "eight_schools_noncentered",
+      pdb = pdb_test,
+      framework = "stan"
+    )
+  )
+  expect_silent(
+    mcfp <- model_code_file_path(mi, pdb = pdb_test, framework = "stan")
+  )
   expect_true(file.exists(mcfp))
 
   # Test reference_posterior
-  expect_silent(gsi <- reference_posterior_draws_info("eight_schools-eight_schools_noncentered", pdb = pdb_test))
-  expect_silent(gsd1 <- reference_posterior_draws("eight_schools-eight_schools_noncentered", pdb = pdb_test))
+  expect_silent(
+    gsi <- reference_posterior_draws_info(
+      "eight_schools-eight_schools_noncentered",
+      pdb = pdb_test
+    )
+  )
+  expect_silent(
+    gsd1 <- reference_posterior_draws(
+      "eight_schools-eight_schools_noncentered",
+      pdb = pdb_test
+    )
+  )
   expect_silent(gsd2 <- reference_posterior_draws(x = gsi, pdb = pdb_test))
-  expect_identical(gsd1,gsd2)
-  expect_silent(gsdfp <- reference_posterior_draws_file_path("eight_schools-eight_schools_noncentered", pdb = pdb_test))
-  expect_silent(gsdfp <- reference_posterior_draws_file_path(gsi, pdb = pdb_test))
+  expect_identical(gsd1, gsd2)
+  expect_silent(
+    gsdfp <- reference_posterior_draws_file_path(
+      "eight_schools-eight_schools_noncentered",
+      pdb = pdb_test
+    )
+  )
+  expect_silent(
+    gsdfp <- reference_posterior_draws_file_path(gsi, pdb = pdb_test)
+  )
 })
-
 
 
 test_that("Check access only with posterior name and default pdb", {
@@ -96,28 +129,44 @@ test_that("Check access only with posterior name and default pdb", {
   expect_silent(sdfp <- data_file_path(di))
 
   # Test model_code/stan_code
-  expect_silent(mi <- model_info("eight_schools_noncentered", framework = "stan"))
+  expect_silent(
+    mi <- model_info("eight_schools_noncentered", framework = "stan")
+  )
   expect_silent(sc1 <- stan_code("eight_schools_noncentered"))
   expect_silent(sc2 <- stan_code(mi))
-  expect_silent(mcfp <- model_code_file_path("eight_schools_noncentered", framework = "stan"))
+  expect_silent(
+    mcfp <- model_code_file_path(
+      "eight_schools_noncentered",
+      framework = "stan"
+    )
+  )
   expect_silent(mcfp <- model_code_file_path(mi, framework = "stan"))
 
   # Test reference_posterior
-  expect_silent(gsi <- reference_posterior_draws_info("eight_schools-eight_schools_noncentered"))
-  expect_silent(gsd1 <- reference_posterior_draws("eight_schools-eight_schools_noncentered"))
+  expect_silent(
+    gsi <- reference_posterior_draws_info(
+      "eight_schools-eight_schools_noncentered"
+    )
+  )
+  expect_silent(
+    gsd1 <- reference_posterior_draws("eight_schools-eight_schools_noncentered")
+  )
   expect_silent(gsd2 <- reference_posterior_draws(x = gsi))
-  expect_silent(gsdfp <- reference_posterior_draws_file_path("eight_schools-eight_schools_noncentered"))
+  expect_silent(
+    gsdfp <- reference_posterior_draws_file_path(
+      "eight_schools-eight_schools_noncentered"
+    )
+  )
   expect_silent(gsdfp <- reference_posterior_draws_file_path(gsi))
-
 })
 
 
-
 test_that("Check that model_code, data and reference_posteriors contain a pdb attr", {
-
   expect_silent(pdb_test <- pdb_local())
 
-  expect_silent(po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test)
+  )
   expect_identical(pdb(po), pdb_test)
 
   expect_silent(d <- get_data(po))
@@ -128,20 +177,21 @@ test_that("Check that model_code, data and reference_posteriors contain a pdb at
 
   expect_silent(rp <- reference_posterior_draws(po))
   expect_identical(pdb(rp), pdb_test)
-
 })
 
 
 test_that("a posterior object can be created from a list", {
-
   expect_silent(pdb_test <- pdb_local())
 
-  expect_silent(po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test))
+  expect_silent(
+    po <- posterior("eight_schools-eight_schools_noncentered", pdb = pdb_test)
+  )
 
-  x <- list(pdb_data = get_data(po),
-            pdb_model_code = model_code(po, framework = "stan"),
-            dimensions = po$dimensions)
+  x <- list(
+    pdb_data = get_data(po),
+    pdb_model_code = model_code(po, framework = "stan"),
+    dimensions = po$dimensions
+  )
 
   expect_message(po2 <- as.posterior(x, pdb_test))
-
 })

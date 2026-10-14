@@ -3,9 +3,15 @@ context("test-pdb_github")
 test_that("posteriordb:::check_pdb indicates that github PDB is ok", {
   skip_if(is.null(github_pat()))
 
-  expect_silent(pdb_github_test1 <- pdb_github("stan-dev/posteriordb/posterior_database"))
+  expect_silent(
+    pdb_github_test1 <- pdb_github("stan-dev/posteriordb/posterior_database")
+  )
   expect_silent(pdb_github_test2 <- pdb_github("stan-dev/posteriordb"))
-  expect_silent(pdb_github_test3 <- pdb_github("stan-dev/posteriordb/posterior_database@master"))
+  expect_silent(
+    pdb_github_test3 <- pdb_github(
+      "stan-dev/posteriordb/posterior_database@master"
+    )
+  )
   expect_output(print(pdb_github_test1), "Posterior Database")
   expect_output(print(pdb_github_test1), "github")
   expect_equal(pdb_github_test1$pdb_id, pdb_github_test2$pdb_id)
@@ -27,8 +33,11 @@ test_that("model_names, data_names and posterior_names work", {
   expect_silent(nms <- reference_posterior_names(pdb_test, "draws"))
   checkmate::expect_choice("eight_schools-eight_schools_noncentered", nms)
 
-
-  expect_silent(pdb_github_test <- pdb_github("stan-dev/posteriordb/posterior_database@master"))
+  expect_silent(
+    pdb_github_test <- pdb_github(
+      "stan-dev/posteriordb/posterior_database@master"
+    )
+  )
   posteriordb:::pdb_clear_cache(pdb_github_test)
   expect_silent(nms <- posterior_names(pdb_github_test))
   checkmate::expect_choice("eight_schools-eight_schools_centered", nms)
@@ -46,12 +55,13 @@ test_that("pdb_default is github", {
   skip_if(is.null(github_pat()))
 
   expect_silent(pdb_default_test <- pdb_default())
-  expect_silent(pdb_github_test <- pdb_github("stan-dev/posteriordb/posterior_database"))
+  expect_silent(
+    pdb_github_test <- pdb_github("stan-dev/posteriordb/posterior_database")
+  )
   expect_silent(pdb_local_test <- try(pdb_local()))
-  if(!inherits(pdb_local_test, "try-error")) {
+  if (!inherits(pdb_local_test, "try-error")) {
     expect_equal(pdb_default_test, pdb_local_test)
   } else {
     expect_equal(pdb_default_test, pdb_github_test)
   }
-
 })
