@@ -96,6 +96,9 @@ compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
   # r_hat
   d$r_hat <- pds$rhat[keep_idx]
 
+  # Mean lag-1 autocorrelation across chains
+  d$mean_lag1_ac <- compute_mean_lag1_ac(pd)[keep_idx]
+
   # divergent_transitions
   hmc_params <- rstan::get_sampler_params(x, inc_warmup = FALSE)
   d$divergent_transitions <- unlist(lapply(hmc_params, function(x) sum(x[, "divergent__"])))

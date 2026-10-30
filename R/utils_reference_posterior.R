@@ -1,6 +1,10 @@
 #' Check that reference posterior draws follows the
 #' reference posterior summary definition.
 #'
+#' @details For Stan sampling, the absolute mean lag-1 autocorrelation across
+#' chains must be less than 0.05 for every variable. It is computed from the
+#' draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
+#'
 #' @param x a posterior name, posterior object or reference_posterior_draws object
 #' @param ... currently not used.
 #'
@@ -51,6 +55,11 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
     checkmate::assert_numeric(rpi$diagnostics$r_hat, upper = 1.01)
     tst$r_hat_below_1_01 <- TRUE
 
+    rpi$diagnostics$mean_lag1_ac <- compute_mean_lag1_ac(x)
+    checkmate::assert_numeric(rpi$diagnostics$mean_lag1_ac, any.missing = FALSE, finite = TRUE)
+    checkmate::assert_true(all(abs(rpi$diagnostics$mean_lag1_ac) < 0.05))
+    tst$abs_mean_lag1_ac_below_0_05 <- TRUE
+
     # Assert that the EFMI is larger than 0.2
     checkmate::assert_numeric(rpi$diagnostics$expected_fraction_of_missing_information, lower = 0.2)
     tst$efmi_above_0_2 <- TRUE
@@ -73,6 +82,10 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
 
 #' Check that reference posterior draws follows the
 #' reference posterior draws definition.
+#'
+#' @details For Stan sampling, the absolute mean lag-1 autocorrelation across
+#' chains must be less than 0.05 for every variable. It is computed from the
+#' draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
 #'
 #' @param x a posterior name, posterior object or reference_posterior_draws object
 #' @param ... currently not used.
@@ -124,6 +137,11 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
     checkmate::assert_numeric(rpi$diagnostics$r_hat, upper = 1.01)
     tst$r_hat_below_1_01 <- TRUE
 
+    rpi$diagnostics$mean_lag1_ac <- compute_mean_lag1_ac(x)
+    checkmate::assert_numeric(rpi$diagnostics$mean_lag1_ac, any.missing = FALSE, finite = TRUE)
+    checkmate::assert_true(all(abs(rpi$diagnostics$mean_lag1_ac) < 0.05))
+    tst$abs_mean_lag1_ac_below_0_05 <- TRUE
+
     # Assert that the EFMI is larger than 0.2
     checkmate::assert_numeric(rpi$diagnostics$expected_fraction_of_missing_information, lower = 0.2)
     tst$efmi_above_0_2 <- TRUE
@@ -141,6 +159,14 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
   assert_reference_posterior_draws(x)
   assert_checked_reference_posterior_draws(x)
   invisible(x)
+}
+
+compute_mean_lag1_ac <- function(x){
+  posterior::summarise_draws(x, mean_lag1_ac = function(draws) {
+    mean(apply(draws, 2, function(chain) {
+      stats::acf(chain, lag.max = 1, plot = FALSE)$acf[2]
+    }))
+  })$mean_lag1_ac
 }
 
 #' Compute ESS tail and bulk bounds

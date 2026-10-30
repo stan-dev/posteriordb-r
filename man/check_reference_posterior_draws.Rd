@@ -25,3 +25,8 @@ check_reference_posterior_draws(x, ...)
 Check that reference posterior draws follows the
 reference posterior draws definition.
 }
+\details{
+For Stan sampling, the absolute mean lag-1 autocorrelation across
+chains must be less than 0.05 for every variable. It is computed from the
+draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
+}
