@@ -4,6 +4,8 @@
 #' @details For Stan sampling, the absolute mean lag-1 autocorrelation across
 #' chains must be less than 0.05 for every variable. It is computed from the
 #' draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
+#' ESS bounds are checked and recorded in \code{info(x)$checks_made$ess_within_bounds},
+#' but a failed ESS bounds check does not disqualify the draws.
 #'
 #' @param x a posterior name, posterior object or reference_posterior_draws object
 #' @param ... currently not used.
@@ -45,11 +47,13 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
     checkmate::assert_true(rpi$diagnostics$nchains >= 4)
     tst$nchains_is_gte_4 <- TRUE
 
-    # Assert the effective sample size is correct/within bounds
+    # Record whether ESS is within bounds, without disqualifying the draws
     ess_bnds <- ess_bounds(x)
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_bulk, lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1])
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_tail, lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
-    tst$ess_within_bounds <- TRUE
+    tst$ess_within_bounds <-
+      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_bulk, any.missing = FALSE,
+                             lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1]) &&
+      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_tail, any.missing = FALSE,
+                             lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
 
     # Assert all Rhat < 1.01
     checkmate::assert_numeric(rpi$diagnostics$r_hat, upper = 1.01)
@@ -86,6 +90,8 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
 #' @details For Stan sampling, the absolute mean lag-1 autocorrelation across
 #' chains must be less than 0.05 for every variable. It is computed from the
 #' draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
+#' ESS bounds are checked and recorded in \code{info(x)$checks_made$ess_within_bounds},
+#' but a failed ESS bounds check does not disqualify the draws.
 #'
 #' @param x a posterior name, posterior object or reference_posterior_draws object
 #' @param ... currently not used.
@@ -127,11 +133,13 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
     checkmate::assert_true(rpi$diagnostics$nchains >= 4)
     tst$nchains_is_gte_4 <- TRUE
 
-    # Assert the effective sample size is correct/within bounds
+    # Record whether ESS is within bounds, without disqualifying the draws
     ess_bnds <- ess_bounds(x)
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_bulk, lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1])
-    checkmate::assert_numeric(rpi$diagnostics$effective_sample_size_tail, lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
-    tst$ess_within_bounds <- TRUE
+    tst$ess_within_bounds <-
+      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_bulk, any.missing = FALSE,
+                             lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1]) &&
+      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_tail, any.missing = FALSE,
+                             lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
 
     # Assert all Rhat < 1.01
     checkmate::assert_numeric(rpi$diagnostics$r_hat, upper = 1.01)

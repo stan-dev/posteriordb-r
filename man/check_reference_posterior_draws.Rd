@@ -29,4 +29,6 @@ reference posterior draws definition.
 For Stan sampling, the absolute mean lag-1 autocorrelation across
 chains must be less than 0.05 for every variable. It is computed from the
 draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
+ESS bounds are checked and recorded in \code{info(x)$checks_made$ess_within_bounds},
+but a failed ESS bounds check does not disqualify the draws.
 }

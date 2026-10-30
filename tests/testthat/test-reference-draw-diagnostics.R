@@ -53,3 +53,22 @@ test_that("checked draws require the lag-1 check to have passed", {
   info(draws)$checks_made$abs_mean_lag1_ac_below_0_05 <- FALSE
   expect_error(assert_checked_summary_statistics_draws(draws), "mean_lag1_ac")
 })
+
+test_that("ESS bounds are informational for reference and summary draws", {
+  draws <- reference_check_draws()
+  info(draws)$diagnostics$effective_sample_size_bulk[1] <- 100
+  checked <- check_reference_posterior_draws(draws)
+  expect_false(info(checked)$checks_made$ess_within_bounds)
+  expect_silent(assert_checked_reference_posterior_draws(checked))
+
+  draws <- reference_check_draws()
+  info(draws)$diagnostics$effective_sample_size_tail[2] <- 20000
+  checked <- check_summary_statistics_draws(draws)
+  expect_false(info(checked)$checks_made$ess_within_bounds)
+  expect_silent(assert_checked_summary_statistics_draws(checked))
+  expect_silent(compute_reference_posterior_summary_statistic(checked, "mean_value"))
+
+  info(draws)$diagnostics$r_hat[2] <- 1.1
+  expect_error(check_reference_posterior_draws(draws), "r_hat")
+  expect_error(check_summary_statistics_draws(draws), "r_hat")
+})

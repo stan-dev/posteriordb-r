@@ -26,7 +26,6 @@ assert_checked_reference_posterior_draws.pdb_reference_posterior_draws <- functi
 assert_checked_reference_posterior_draws.pdb_reference_posterior_info <- function(x){
   checkmate::assert_true(x$checks_made$ndraws_is_10k)
   checkmate::assert_true(x$checks_made$nchains_is_gte_4)
-  checkmate::assert_true(x$checks_made$ess_within_bounds)
   checkmate::assert_true(x$checks_made$r_hat_below_1_01)
   checkmate::assert_true(x$checks_made$abs_mean_lag1_ac_below_0_05)
   checkmate::assert_true(x$checks_made$efmi_above_0_2)
@@ -58,7 +57,6 @@ assert_checked_summary_statistics_draws.pdb_reference_posterior_summary_statisti
 assert_checked_summary_statistics_draws.pdb_reference_posterior_info <- function(x){
   checkmate::assert_true(x$checks_made$ndraws_is_gte_10k)
   checkmate::assert_true(x$checks_made$nchains_is_gte_4)
-  checkmate::assert_true(x$checks_made$ess_within_bounds)
   checkmate::assert_true(x$checks_made$r_hat_below_1_01)
   checkmate::assert_true(x$checks_made$abs_mean_lag1_ac_below_0_05)
   checkmate::assert_true(x$checks_made$efmi_above_0_2)
