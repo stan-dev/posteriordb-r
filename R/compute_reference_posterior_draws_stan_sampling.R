@@ -92,6 +92,7 @@ compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
 
   # ESS tail
   d$effective_sample_size_tail <- pds$ess_tail[keep_idx]
+  d$ess_bounds <- ess_bounds(pd)
 
   # r_hat
   d$r_hat <- pds$rhat[keep_idx]

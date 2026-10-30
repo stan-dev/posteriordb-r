@@ -72,3 +72,34 @@ test_that("ESS bounds are informational for reference and summary draws", {
   expect_error(check_reference_posterior_draws(draws), "r_hat")
   expect_error(check_summary_statistics_draws(draws), "r_hat")
 })
+
+test_that("ESS bounds are attached to checked draws and written to the database", {
+  draws <- reference_check_draws()
+  bounds <- list(ess_bulk = 10000 + c(1, -1) * 4 * sqrt(7 * 10000),
+                 ess_tail = 10000 + c(1, -1) * 4 * sqrt(7 * 10000))
+  for(check in list(check_reference_posterior_draws, check_summary_statistics_draws)){
+    expect_equal(info(check(draws))$diagnostics$ess_bounds, bounds)
+  }
+
+  db_dir <- tempfile()
+  dir.create(db_dir)
+  for(directory in c("data", "models", "posteriors")) dir.create(file.path(db_dir, directory))
+  db <- pdb_local(db_dir)
+  info(draws)$diagnostics$effective_sample_size_bulk[1] <- 100
+  checked <- check_reference_posterior_draws(draws)
+  expect_silent(write_pdb(checked, db))
+  written <- read_reference_posterior_info(info(checked)$name, type = "draws", pdb = db)
+  expect_equal(written$diagnostics$ess_bounds, bounds)
+  expect_false(written$checks_made$ess_within_bounds)
+})
+
+test_that("computed Stan diagnostics include lag-1 autocorrelation and ESS bounds", {
+  testthat::local_mocked_bindings(
+    get_sampler_params = function(...) rep(list(cbind(divergent__ = rep(0, 2500))), 4),
+    get_bfmi = function(...) rep(0.5, 4), .package = "rstan")
+  draws <- reference_check_draws()
+  diagnostics <- compute_stan_sampling_diagnostics(draws, keep_dimensions = "y")
+  expect_equal(diagnostics$mean_lag1_ac, compute_mean_lag1_ac(draws)[2])
+  expect_equal(diagnostics$ess_bounds, ess_bounds(draws))
+  expect_identical(diagnostics$diagnostic_information$names, "y")
+})

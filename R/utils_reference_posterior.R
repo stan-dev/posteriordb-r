@@ -6,6 +6,7 @@
 #' draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
 #' ESS bounds are checked and recorded in \code{info(x)$checks_made$ess_within_bounds},
 #' but a failed ESS bounds check does not disqualify the draws.
+#' The bulk and tail bounds are stored in \code{info(x)$diagnostics$ess_bounds}.
 #'
 #' @param x a posterior name, posterior object or reference_posterior_draws object
 #' @param ... currently not used.
@@ -49,6 +50,7 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
 
     # Record whether ESS is within bounds, without disqualifying the draws
     ess_bnds <- ess_bounds(x)
+    rpi$diagnostics$ess_bounds <- ess_bnds
     tst$ess_within_bounds <-
       checkmate::test_numeric(rpi$diagnostics$effective_sample_size_bulk, any.missing = FALSE,
                              lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1]) &&
@@ -92,6 +94,7 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
 #' draws and stored in \code{info(x)$diagnostics$mean_lag1_ac}.
 #' ESS bounds are checked and recorded in \code{info(x)$checks_made$ess_within_bounds},
 #' but a failed ESS bounds check does not disqualify the draws.
+#' The bulk and tail bounds are stored in \code{info(x)$diagnostics$ess_bounds}.
 #'
 #' @param x a posterior name, posterior object or reference_posterior_draws object
 #' @param ... currently not used.
@@ -135,6 +138,7 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
 
     # Record whether ESS is within bounds, without disqualifying the draws
     ess_bnds <- ess_bounds(x)
+    rpi$diagnostics$ess_bounds <- ess_bnds
     tst$ess_within_bounds <-
       checkmate::test_numeric(rpi$diagnostics$effective_sample_size_bulk, any.missing = FALSE,
                              lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1]) &&
