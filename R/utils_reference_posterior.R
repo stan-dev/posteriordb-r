@@ -12,27 +12,30 @@
 #' @param ... currently not used.
 #'
 #' @export
-check_summary_statistics_draws <- function(x, ...){
+check_summary_statistics_draws <- function(x, ...) {
   UseMethod("check_summary_statistics_draws")
 }
 
 #' @rdname check_summary_statistics_draws
 #' @export
-check_summary_statistics_draws.character <- function(x, ...){
+check_summary_statistics_draws.character <- function(x, ...) {
   x <- pdb_posterior(x, ...)
   check_summary_statistics_draws(x)
 }
 
 #' @rdname check_summary_statistics_draws
 #' @export
-check_summary_statistics_draws.pdb_posterior <- function(x, ...){
+check_summary_statistics_draws.pdb_posterior <- function(x, ...) {
   x <- reference_posterior_draws(x)
   check_summary_statistics_draws(x)
 }
 
 #' @rdname check_summary_statistics_draws
 #' @export
-check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...){
+check_summary_statistics_draws.pdb_reference_posterior_draws <- function(
+  x,
+  ...
+) {
   assert_reference_posterior_draws(x)
   rpi <- info(x)
   assert_reference_posterior_info(rpi)
@@ -43,7 +46,7 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
   checkmate::assert_true(rpi$diagnostics$ndraws >= 10000)
   tst$ndraws_is_gte_10k <- TRUE
 
-  if(rpi$inference$method == "stan_sampling"){
+  if (rpi$inference$method == "stan_sampling") {
     # Assert that at least 4 chains has been used
     checkmate::assert_true(rpi$diagnostics$nchains >= 4)
     tst$nchains_is_gte_4 <- TRUE
@@ -52,24 +55,38 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
     ess_bnds <- ess_bounds(x)
     rpi$diagnostics$ess_bounds <- ess_bnds
     tst$ess_within_bounds <-
-      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_bulk, any.missing = FALSE,
-                             lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1]) &&
-      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_tail, any.missing = FALSE,
-                             lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
+      checkmate::test_numeric(
+        rpi$diagnostics$effective_sample_size_bulk,
+        any.missing = FALSE,
+        lower = ess_bnds$ess_bulk[2],
+        upper = ess_bnds$ess_bulk[1]
+      ) &&
+      checkmate::test_numeric(
+        rpi$diagnostics$effective_sample_size_tail,
+        any.missing = FALSE,
+        lower = ess_bnds$ess_tail[2],
+        upper = ess_bnds$ess_tail[1]
+      )
 
     # Assert all Rhat < 1.01
     checkmate::assert_numeric(rpi$diagnostics$r_hat, upper = 1.01)
     tst$r_hat_below_1_01 <- TRUE
 
     rpi$diagnostics$mean_lag1_ac <- compute_mean_lag1_ac(x)
-    checkmate::assert_numeric(rpi$diagnostics$mean_lag1_ac, any.missing = FALSE, finite = TRUE)
+    checkmate::assert_numeric(
+      rpi$diagnostics$mean_lag1_ac,
+      any.missing = FALSE,
+      finite = TRUE
+    )
     checkmate::assert_true(all(abs(rpi$diagnostics$mean_lag1_ac) < 0.05))
     tst$abs_mean_lag1_ac_below_0_05 <- TRUE
 
     # Assert that the EFMI is larger than 0.2
-    checkmate::assert_numeric(rpi$diagnostics$expected_fraction_of_missing_information, lower = 0.2)
+    checkmate::assert_numeric(
+      rpi$diagnostics$expected_fraction_of_missing_information,
+      lower = 0.2
+    )
     tst$efmi_above_0_2 <- TRUE
-
   }
 
   # Add checks made to reference posterior
@@ -100,27 +117,30 @@ check_summary_statistics_draws.pdb_reference_posterior_draws <- function(x, ...)
 #' @param ... currently not used.
 #'
 #' @export
-check_reference_posterior_draws <- function(x, ...){
+check_reference_posterior_draws <- function(x, ...) {
   UseMethod("check_reference_posterior_draws")
 }
 
 #' @rdname check_reference_posterior_draws
 #' @export
-check_reference_posterior_draws.character <- function(x, ...){
+check_reference_posterior_draws.character <- function(x, ...) {
   x <- pdb_posterior(x, ...)
   check_reference_posterior_draws(x)
 }
 
 #' @rdname check_reference_posterior_draws
 #' @export
-check_reference_posterior_draws.pdb_posterior <- function(x, ...){
+check_reference_posterior_draws.pdb_posterior <- function(x, ...) {
   x <- reference_posterior_draws(x)
   check_reference_posterior_draws(x)
 }
 
 #' @rdname check_reference_posterior_draws
 #' @export
-check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...){
+check_reference_posterior_draws.pdb_reference_posterior_draws <- function(
+  x,
+  ...
+) {
   assert_reference_posterior_draws(x)
   rpi <- info(x)
   assert_reference_posterior_info(rpi)
@@ -131,7 +151,7 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
   checkmate::assert_true(rpi$diagnostics$ndraws == 10000)
   tst$ndraws_is_10k <- TRUE
 
-  if(rpi$inference$method == "stan_sampling"){
+  if (rpi$inference$method == "stan_sampling") {
     # Assert that at least 4 chains has been used
     checkmate::assert_true(rpi$diagnostics$nchains >= 4)
     tst$nchains_is_gte_4 <- TRUE
@@ -140,24 +160,38 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
     ess_bnds <- ess_bounds(x)
     rpi$diagnostics$ess_bounds <- ess_bnds
     tst$ess_within_bounds <-
-      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_bulk, any.missing = FALSE,
-                             lower = ess_bnds$ess_bulk[2], upper = ess_bnds$ess_bulk[1]) &&
-      checkmate::test_numeric(rpi$diagnostics$effective_sample_size_tail, any.missing = FALSE,
-                             lower = ess_bnds$ess_tail[2], upper = ess_bnds$ess_tail[1])
+      checkmate::test_numeric(
+        rpi$diagnostics$effective_sample_size_bulk,
+        any.missing = FALSE,
+        lower = ess_bnds$ess_bulk[2],
+        upper = ess_bnds$ess_bulk[1]
+      ) &&
+      checkmate::test_numeric(
+        rpi$diagnostics$effective_sample_size_tail,
+        any.missing = FALSE,
+        lower = ess_bnds$ess_tail[2],
+        upper = ess_bnds$ess_tail[1]
+      )
 
     # Assert all Rhat < 1.01
     checkmate::assert_numeric(rpi$diagnostics$r_hat, upper = 1.01)
     tst$r_hat_below_1_01 <- TRUE
 
     rpi$diagnostics$mean_lag1_ac <- compute_mean_lag1_ac(x)
-    checkmate::assert_numeric(rpi$diagnostics$mean_lag1_ac, any.missing = FALSE, finite = TRUE)
+    checkmate::assert_numeric(
+      rpi$diagnostics$mean_lag1_ac,
+      any.missing = FALSE,
+      finite = TRUE
+    )
     checkmate::assert_true(all(abs(rpi$diagnostics$mean_lag1_ac) < 0.05))
     tst$abs_mean_lag1_ac_below_0_05 <- TRUE
 
     # Assert that the EFMI is larger than 0.2
-    checkmate::assert_numeric(rpi$diagnostics$expected_fraction_of_missing_information, lower = 0.2)
+    checkmate::assert_numeric(
+      rpi$diagnostics$expected_fraction_of_missing_information,
+      lower = 0.2
+    )
     tst$efmi_above_0_2 <- TRUE
-
   }
 
   # Add checks made to reference posterior
@@ -173,11 +207,11 @@ check_reference_posterior_draws.pdb_reference_posterior_draws <- function(x, ...
   invisible(x)
 }
 
-compute_mean_lag1_ac <- function(x){
+compute_mean_lag1_ac <- function(x) {
   posterior::summarise_draws(x, mean_lag1_ac = function(draws) {
-    mean(apply(draws, 2, function(chain) {
+    mean(abs(apply(draws, 2, function(chain) {
       stats::acf(chain, lag.max = 1, plot = FALSE)$acf[2]
-    }))
+    })))
   })$mean_lag1_ac
 }
 
@@ -188,7 +222,7 @@ compute_mean_lag1_ac <- function(x){
 #'
 #' @param x a [pdb_reference_posterior_draws] object.
 #' @keywords internal
-ess_bounds <- function(x){
+ess_bounds <- function(x) {
   checkmate::assert_class(x, "draws")
 
   npar <- posterior::nvariables(x)
@@ -201,7 +235,5 @@ ess_bounds <- function(x){
   #  alpha <- 1 - exp(log(p)/npar)
   #  essb <- esst <- NULL # To mask check NOTEs
 
-  list(ess_bulk = bnds,
-       ess_tail = bnds)
-
+  list(ess_bulk = bnds, ess_tail = bnds)
 }
