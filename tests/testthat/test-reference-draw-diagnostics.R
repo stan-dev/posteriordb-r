@@ -14,12 +14,12 @@ reference_check_draws <- function(){
   as.reference_posterior_draws(draws, info = rpi)
 }
 
-test_that("mean lag-1 autocorrelation is computed for every variable", {
+test_that("abs mean lag-1 autocorrelation is computed for every variable", {
   draws <- reference_check_draws()
   expected <- vapply(c("x", "y"), function(variable) {
-    mean(vapply(draws, function(chain) {
+    mean(abs(vapply(draws, function(chain) {
       stats::acf(chain[[variable]], lag.max = 1, plot = FALSE)$acf[2]
-    }, numeric(1)))
+    }, numeric(1))))
   }, numeric(1))
 
   for(check in list(check_reference_posterior_draws, check_summary_statistics_draws)){
