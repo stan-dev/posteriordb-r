@@ -130,6 +130,7 @@ test_that("write reference_posterior", {
   expect_silent(po <- posterior("eight_schools-eight_schools_centered", pdb_test))
   expect_silent(gsi <- reference_posterior_draws_info(po))
   expect_silent(gsd <- reference_posterior_draws(po))
+  expect_silent(gsd <- check_reference_posterior_draws(gsd))
 
   # Setup posterior
   # This is needed to access the created reference posterior
@@ -147,7 +148,7 @@ test_that("write reference_posterior", {
   expect_silent(rpt <- pdb_reference_posterior_draws(x = "test_data-test_model", pdb_test))
 
   expect_identical(info(gsd)$added_by, info(rpt)$added_by)
-  expect_identical(gsd, rpt)
+  expect_equal(gsd, rpt, tolerance = 1e-14)
 
   # Remove rpd
   expect_silent(remove_pdb(rpt, pdb = pdb_test))

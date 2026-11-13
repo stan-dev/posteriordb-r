@@ -92,9 +92,13 @@ compute_stan_sampling_diagnostics <- function(x, keep_dimensions ){
 
   # ESS tail
   d$effective_sample_size_tail <- pds$ess_tail[keep_idx]
+  d$ess_bounds <- ess_bounds(pd)
 
   # r_hat
   d$r_hat <- pds$rhat[keep_idx]
+
+  # Mean lag-1 autocorrelation across chains
+  d$mean_lag1_ac <- compute_mean_lag1_ac(pd)[keep_idx]
 
   # divergent_transitions
   hmc_params <- rstan::get_sampler_params(x, inc_warmup = FALSE)
